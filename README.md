@@ -1,3 +1,16 @@
+# Completed by Andriy Diduh 
+
+hi, my name is Andriy  <br />
+and I'm a software engineer, <br />
+let's see what can be built here! 
+
+Feel free to visit my [Portfolio website ](https://andriydiduh.com).
+
+I hope you will launch this demo to see it in action, and I hope that you will Fork and not just copy ;) 
+
+.
+
+
 # Frontier React Exercise
 
 At Frontier, we aim to help our customers find and hire more candidates by improving their hiring funnel. One large part of this funnel is our highly optimized job application forms, which we generate for each customer based on their requirements and their existing application form.
