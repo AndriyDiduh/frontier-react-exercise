@@ -1,3 +1,4 @@
+import { kMaxLength } from "buffer";
 import React from "react";
 import {
   ContentEntity,
@@ -38,21 +39,36 @@ export default class GenerateField extends React.Component<
     return typeof item !== "undefined" && typeof item !== null;
   };
 
+  // Check for the number in the metadata
+  private metadataNumberTypeGuard = (
+    item: number | null | undefined
+  ): item is number => {
+    return typeof item !== "undefined" && typeof item !== null;
+  };
+
   private metadataArrayTypeGuard = (
     item: Metadata["options"]
   ): item is OptionsEntity[] => {
     return typeof item !== "undefined" && typeof item !== null;
   };
 
-  // Limits
+  // Limits on input
   private fieldInputLimits: {
-    minlength: number;
-    maxlength: number;
+    minLength: number;
+    maxLength: number;
     size: number;
   } = {
-    minlength: 2,
-    maxlength: 32,
+    minLength: 2,
+    maxLength: 32,
     size: 33,
+  };
+
+  private fieldNumberLimits: {
+    min: number;
+    max: number;
+  } = {
+    min: 1,
+    max: 80,
   };
 
   // Templates for Fields
@@ -65,19 +81,39 @@ export default class GenerateField extends React.Component<
       <>
         <input
           id={id}
+          name={id}
           className="inputField fieldText"
           type="text"
           placeholder={placeholder}
           {...(required ? { required: true } : {})}
-          {...{ minLength: this.fieldInputLimits.minlength }}
-          {...{ maxLength: this.fieldInputLimits.maxlength }}
+          {...{ minLength: this.fieldInputLimits.minLength }}
+          {...{ maxLength: this.fieldInputLimits.maxLength }}
           {...{ size: this.fieldInputLimits.size }}
         />
       </>
     );
   };
 
-  private fieldEmail = (
+  private fieldTextArea = (
+    id: string,
+    placeholder: string,
+    required: boolean
+  ): JSX.Element => {
+    return (
+      <>
+        <textarea
+          id={id}
+          name={id}
+          className="inputField fieldTextArea"
+          placeholder={placeholder}
+          {...(required ? { required: true } : {})}
+        ></textarea>
+      </>
+    );
+  };
+
+  // Templates for Fields
+  private fieldNumber = (
     id: string,
     placeholder: string,
     required: boolean
@@ -86,12 +122,36 @@ export default class GenerateField extends React.Component<
       <>
         <input
           id={id}
+          name={id}
+          className="inputField fieldNumber"
+          type="number"
+          placeholder={placeholder}
+          {...(required ? { required: true } : {})}
+          {...{ min: this.fieldNumberLimits.min }}
+          {...{ max: this.fieldNumberLimits.max }}
+        />
+      </>
+    );
+  };
+
+  private fieldEmail = (
+    id: string,
+    placeholder: string,
+    required: boolean,
+    pattern: string
+  ): JSX.Element => {
+    return (
+      <>
+        <input
+          id={id}
+          name={id}
           className="inputField fieldEmail"
           type="email"
           placeholder={placeholder}
+          pattern={pattern}
           {...(required ? { required: true } : {})}
-          {...{ minLength: this.fieldInputLimits.minlength }}
-          {...{ maxLength: this.fieldInputLimits.maxlength }}
+          {...{ minLength: this.fieldInputLimits.minLength }}
+          {...{ maxLength: this.fieldInputLimits.maxLength }}
           {...{ size: this.fieldInputLimits.size }}
         />
       </>
@@ -102,19 +162,45 @@ export default class GenerateField extends React.Component<
     id: string,
     placeholder: string,
     required: boolean,
+    pattern: string,
+    maxLength: number
+  ): JSX.Element => {
+    return (
+      <>
+        <input
+          id={id}
+          name={id}
+          className="inputField fieldPhone"
+          type="tel"
+          placeholder={placeholder}
+          pattern={pattern}
+          {...(required ? { required: true } : {})}
+          {...{ minLength: this.fieldInputLimits.minLength }}
+          {...{ maxLength: maxLength }}
+          {...{ size: this.fieldInputLimits.size }}
+        />
+      </>
+    );
+  };
+
+  private fieldUrl = (
+    id: string,
+    placeholder: string,
+    required: boolean,
     pattern: string
   ): JSX.Element => {
     return (
       <>
         <input
           id={id}
-          className="inputField fieldPhone"
-          type="tel"
+          name={id}
+          className="inputField fieldUrl"
+          type="url"
           placeholder={placeholder}
           pattern={pattern}
           {...(required ? { required: true } : {})}
-          {...{ minLength: this.fieldInputLimits.minlength }}
-          {...{ maxLength: this.fieldInputLimits.maxlength }}
+          {...{ minLength: this.fieldInputLimits.minLength }}
+          {...{ maxLength: this.fieldInputLimits.maxLength }}
           {...{ size: this.fieldInputLimits.size }}
         />
       </>
@@ -130,18 +216,18 @@ export default class GenerateField extends React.Component<
           {...(required ? { required: true } : {})}
         >
           <input
-            type="radio"
-            className="boolSwitch-button buttonLeft"
             id={id + "-yes"}
             name={id}
+            className="boolSwitch-button buttonLeft"
+            type="radio"
             value="Yes"
           />
           <label htmlFor={id + "-yes"}>Yes</label>
           <input
-            type="radio"
-            className="boolSwitch-button buttonRight"
             id={id + "-no"}
             name={id}
+            className="boolSwitch-button buttonRight"
+            type="radio"
             value="No"
           />
           <label htmlFor={id + "-no"}>No</label>
@@ -158,13 +244,17 @@ export default class GenerateField extends React.Component<
     // Generate list
     const optionsLayout: JSX.Element[] = options.map(
       (val: OptionsEntity, index: number): JSX.Element => {
-        return <option key={index} value={val.value}>{val.label}</option>;
+        return (
+          <option key={index} value={val.value}>
+            {val.label}
+          </option>
+        );
       }
     );
 
     return (
       <>
-        <select name={id} id={id}>
+        <select name={id} id={id} {...(required ? { required: true } : {})}>
           {optionsLayout}
         </select>
       </>
@@ -176,16 +266,28 @@ export default class GenerateField extends React.Component<
     required: boolean,
     options: OptionsEntity[]
   ): JSX.Element => {
+    // For the key "originStep", no proper explanation was provided to explain what that key means, 
+    // and how to use it, that's why I will not use "originStep" for now. 
+
     // Generate list
     const optionsLayout: JSX.Element[] = options.map(
       (val: OptionsEntity, index: number): JSX.Element => {
-        return <option key={index} value={val.value}>{val.label}</option>;
+        return (
+          <option key={index} value={val.value}>
+            {val.label}
+          </option>
+        );
       }
     );
 
     return (
       <>
-        <select name={id} id={id}>
+        <select
+          name={id}
+          id={id}
+          {...(required ? { required: true } : {})}
+          multiple
+        >
           {optionsLayout}
         </select>
       </>
@@ -215,6 +317,11 @@ export default class GenerateField extends React.Component<
       options = fieldItem.metadata.options;
     }
 
+    let maxLength: number = 0;
+    if (this.metadataNumberTypeGuard(fieldItem.metadata.maxlength)) {
+      maxLength = fieldItem.metadata.maxlength;
+    }
+
     // Switch to the correct field type
     switch (fieldItem.type) {
       case "text":
@@ -226,16 +333,43 @@ export default class GenerateField extends React.Component<
         );
         break;
       }
-      case "email": {
-        field = this.fieldEmail(
+      case "textarea": {
+        field = this.fieldTextArea(
           fieldItem.id,
           placeholder,
           fieldItem.metadata.required
         );
         break;
       }
+      case "number": {
+        field = this.fieldNumber(
+          fieldItem.id,
+          placeholder,
+          fieldItem.metadata.required
+        );
+        break;
+      }
+      case "email": {
+        field = this.fieldEmail(
+          fieldItem.id,
+          placeholder,
+          fieldItem.metadata.required,
+          pattern
+        );
+        break;
+      }
       case "phone": {
         field = this.fieldPhone(
+          fieldItem.id,
+          placeholder,
+          fieldItem.metadata.required,
+          pattern,
+          maxLength
+        );
+        break;
+      }
+      case "url": {
+        field = this.fieldUrl(
           fieldItem.id,
           placeholder,
           fieldItem.metadata.required,
@@ -255,6 +389,14 @@ export default class GenerateField extends React.Component<
         );
         break;
       }
+      case "multichoice": {
+        field = this.selectMultiList(
+          fieldItem.id,
+          fieldItem.metadata.required,
+          options
+        );
+        break;
+      }
     }
 
     // Assemble layout
@@ -262,6 +404,7 @@ export default class GenerateField extends React.Component<
       <div className="fieldBlock-outset">
         <div className="fieldBlock">
           <div className="fieldBlock-inset">
+            ***
             <label htmlFor={fieldItem.id} className="fieldTitle">
               {fieldItem.question_text}
             </label>
