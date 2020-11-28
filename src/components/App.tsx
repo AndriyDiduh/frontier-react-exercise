@@ -3,9 +3,18 @@ import GenerateSections from "./GenerateSections";
 import formInstructions from "../data/formInstructions.json";
 
 /**
+ * Local interfaces
+ */
+
+interface AppState {
+  activeSection: string;
+  masterFormDataEdited: Object;
+}
+
+/**
  * Generate the Master Form
  */
-export default class App extends React.Component<any, any> {
+export default class App extends React.Component<any, AppState> {
   public constructor(props: any) {
     super(props);
     this.state = {

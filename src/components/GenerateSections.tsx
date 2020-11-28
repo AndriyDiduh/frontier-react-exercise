@@ -56,7 +56,7 @@ export default class GenerateSections extends React.Component<
     const sections: GenerateSectionsProps["masterFormInstructionsSections"] = this
       .props.masterFormInstructionsSections;
 
-    // Gen. a Section - Hardcode First for testing
+    // Gen. a Section 
     let layoutComplete: JSX.Element[] | [] = [];
 
     if (this.sectionsEntityTypeGuard(sections)) {
@@ -67,7 +67,7 @@ export default class GenerateSections extends React.Component<
           let fieldsList: ContentEntity[] = [];
 
           // Fix to deal with TypeScript "!predictable nature"
-          //- https://github.com/microsoft/TypeScript/issues/33391
+          // - https://github.com/microsoft/TypeScript/issues/33391
           let content = sections[index]["content"];
 
           // Test our content
@@ -108,7 +108,7 @@ export default class GenerateSections extends React.Component<
   private generateFieldsList = (fieldsList: ContentEntity[]): JSX.Element => {
     let layout: JSX.Element = <></>;
 
-    // TEST for undefined/null
+    // Test for undefined and null
     const fieldsListTested = this.sectionsEntityContentTypeGuard(fieldsList)
       ? fieldsList
       : [];
