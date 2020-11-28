@@ -1,17 +1,45 @@
-import React from 'react';
-import formInstructions from '../data/form_instructions.json';
+import React from "react";
+import GenerateSections from "./GenerateSections";
+import formInstructions from "../data/formInstructions.json";
 
-function App() {
-  // Check your console to see the full instructions!
-  console.log(formInstructions);
+/**
+ * Generate the Master Form
+ */
+export default class App extends React.Component<any, any> {
+  public constructor(props: any) {
+    super(props);
+    this.state = {
+      activeSection: "about",
+      masterFormDataEdited: {},
+    };
+  }
 
-  return (
-    <div>
-      <img src="https://frontier-public-assets.s3-us-west-2.amazonaws.com/frontier-corona-logo.svg" alt="Frontier Logo" />
-      <h1>👋 Hello from Team Frontier!</h1>
-      <p>Good luck with the exercise. If you have any questions please email Jason: jason@frontier.jobs</p>
-    </div>
-  );
+  public render = (): JSX.Element => {
+    return (
+      <>
+        <div className="masterForm-holder">
+          <div className="masterForm">
+            <div className="masterForm-header">
+              {/**
+               * Provides a steps counter.
+               */}
+            </div>
+            <div className="masterForm-content">
+              {/**
+               * The form sections.
+               */}
+              <GenerateSections
+                masterFormInstructionsSections={formInstructions.sections}
+              />
+            </div>
+            <div className="masterForm-actions">
+              {/**
+               * Action triggers, next, back, submit, etc...
+               */}
+            </div>
+          </div>
+        </div>
+      </>
+    );
+  };
 }
-
-export default App;
