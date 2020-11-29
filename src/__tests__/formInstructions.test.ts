@@ -1,5 +1,5 @@
-import { FormInstructions } from "./formInstructionTypes";
-import formInstructions from "./formInstructions.json";
+import { FormInstructions } from "../data/formInstructionTypes";
+import formInstructions from "../data/formInstructions.json";
 
 /**
  * Test for data consistency

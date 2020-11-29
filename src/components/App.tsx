@@ -4,7 +4,7 @@ import { SubmitAction } from "./FormActions";
 import formInstructionsData from "../data/formInstructions.json";
 import { FormInstructions, SectionsEntity } from "../data/formInstructionTypes";
 
-// Add types to catch any errors during build
+// Add types to catch any errors during the build in the console, this is a necessary step
 const formInstructions: FormInstructions = formInstructionsData;
 
 /**
