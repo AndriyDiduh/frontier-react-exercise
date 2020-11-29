@@ -4,6 +4,11 @@ import {
   OptionsEntity,
   Metadata,
 } from "../data/formInstructionTypes";
+import {
+  metadataStringTypeGuard,
+  metadataNumberTypeGuard,
+  metadataArrayTypeGuard,
+} from "./TypeGuard";
 
 /**
  * Local interfaces
@@ -37,30 +42,6 @@ export default class GenerateField extends React.Component<
     super(props);
     this.state = {};
   }
-
-  /**
-   * Type Guard
-   */
-
-  // Check for the string in the metadata
-  private metadataStringTypeGuard = (
-    item: string | null | undefined
-  ): item is string => {
-    return typeof item !== "undefined" && typeof item !== null;
-  };
-
-  // Check for the number in the metadata
-  private metadataNumberTypeGuard = (
-    item: number | null | undefined
-  ): item is number => {
-    return typeof item !== "undefined" && typeof item !== null;
-  };
-
-  private metadataArrayTypeGuard = (
-    item: Metadata["options"]
-  ): item is OptionsEntity[] => {
-    return typeof item !== "undefined" && typeof item !== null;
-  };
 
   // Limits on input
   private fieldInputLimits: {
@@ -327,22 +308,22 @@ export default class GenerateField extends React.Component<
 
     // Test for undefined and null
     let placeholder: string = "";
-    if (this.metadataStringTypeGuard(fieldItem.metadata.placeholder)) {
+    if (metadataStringTypeGuard(fieldItem.metadata.placeholder)) {
       placeholder = fieldItem.metadata.placeholder;
     }
 
     let pattern: string = "";
-    if (this.metadataStringTypeGuard(fieldItem.metadata.pattern)) {
+    if (metadataStringTypeGuard(fieldItem.metadata.pattern)) {
       pattern = fieldItem.metadata.pattern;
     }
 
     let options: OptionsEntity[] = [];
-    if (this.metadataArrayTypeGuard(fieldItem.metadata.options)) {
+    if (metadataArrayTypeGuard(fieldItem.metadata.options)) {
       options = fieldItem.metadata.options;
     }
 
     let maxLength: number = 0;
-    if (this.metadataNumberTypeGuard(fieldItem.metadata.maxlength)) {
+    if (metadataNumberTypeGuard(fieldItem.metadata.maxlength)) {
       maxLength = fieldItem.metadata.maxlength;
     }
 

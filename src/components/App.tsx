@@ -1,8 +1,12 @@
 import React from "react";
 import GenerateSections from "./GenerateSections";
-import { SubmitAction } from "./FormActions";
+import GenerateActionsBar from "./GenerateActionsBar";
 import formInstructionsData from "../data/formInstructions.json";
 import { FormInstructions, SectionsEntity } from "../data/formInstructionTypes";
+import {
+  formInstructionsTypeGuard,
+  sectionsEntityTypeGuard,
+} from "./TypeGuard";
 
 // Add types to catch any errors during the build in the console, this is a necessary step
 const formInstructions: FormInstructions = formInstructionsData;
@@ -13,6 +17,7 @@ const formInstructions: FormInstructions = formInstructionsData;
 
 interface AppState {
   activeSection: string;
+  formInstructions: FormInstructions | {};
   masterFormDataEdited: Object;
 }
 
@@ -24,11 +29,14 @@ export default class App extends React.Component<any, AppState> {
     super(props);
     this.state = {
       activeSection: "",
+      formInstructions: {},
       masterFormDataEdited: {},
     };
 
-    // SUBMIT
+    // SUBMIT , Next, Back
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleNext = this.handleNext.bind(this);
+    this.handleBack = this.handleNext.bind(this);
 
     // On change handlers
     this.handleInputFieldChange = this.handleInputFieldChange.bind(this);
@@ -38,24 +46,25 @@ export default class App extends React.Component<any, AppState> {
 
   // Initiate on start
   public componentDidMount = (): void => {
-    // Get the default active section, the first one
-    const sectionId: string =
-      this.sectionsEntityTypeGuard(formInstructions.sections) &&
-      formInstructions.sections.length
-        ? formInstructions.sections[0].id
-        : "";
-    this.setState({ ...this.state, activeSection: sectionId });
+    // Put form instructions to state first
+    this.setState({ ...this.state, formInstructions: formInstructions }, () =>
+      this.openDefaultFormSection()
+    );
   };
 
-  /**
-   * Type Guard
-   */
+  // Put the default section in view
+  private openDefaultFormSection = (): void => {
+    // Get the default active section, the first one
+    let sectionId: string = "";
+    if (formInstructionsTypeGuard(this.state.formInstructions)) {
+      sectionId =
+        sectionsEntityTypeGuard(this.state.formInstructions.sections) &&
+        this.state.formInstructions.sections.length
+          ? this.state.formInstructions.sections[0].id
+          : "";
+    }
 
-  // Single item of the section array
-  private sectionsEntityTypeGuard = (
-    item: FormInstructions["sections"]
-  ): item is SectionsEntity[] => {
-    return typeof item !== "undefined" && typeof item !== null;
+    this.setState({ ...this.state, activeSection: sectionId });
   };
 
   // Submit
@@ -72,10 +81,16 @@ export default class App extends React.Component<any, AppState> {
     );
   };
 
-  // Next and back
-  private handleNextBack = (): void => {
+  // Next form
+  private handleNext = (sectionId: string): void => {
     // Switch to the next section
+    this.setState({ ...this.state, activeSection: sectionId });
+  };
+
+  // Back to the previous form
+  private handleBack = (sectionId: string): void => {
     // Switch to the previous section
+    this.setState({ ...this.state, activeSection: sectionId });
   };
 
   // Fields change handler
@@ -140,20 +155,38 @@ export default class App extends React.Component<any, AppState> {
               {/**
                * The form sections.
                */}
-              <GenerateSections
-                activeSection={this.state.activeSection}
-                masterFormInstructionsSections={formInstructions.sections}
-                handleSubmit={this.handleSubmit}
-                handleInputFieldChange={this.handleInputFieldChange}
-                handleSelectFieldChange={this.handleSelectFieldChange}
-                handleRadioFieldChange={this.handleRadioFieldChange}
-              />
+              {formInstructionsTypeGuard(this.state.formInstructions) ? (
+                <GenerateSections
+                  activeSection={this.state.activeSection}
+                  masterFormInstructionsSections={
+                    this.state.formInstructions.sections
+                  }
+                  handleSubmit={this.handleSubmit}
+                  handleInputFieldChange={this.handleInputFieldChange}
+                  handleSelectFieldChange={this.handleSelectFieldChange}
+                  handleRadioFieldChange={this.handleRadioFieldChange}
+                />
+              ) : (
+                ""
+              )}
             </div>
             <div className="masterForm-actions">
               {/**
                * Action triggers, next, back, submit, etc...
                */}
-              <SubmitAction handleSubmit={this.handleSubmit} />
+              {formInstructionsTypeGuard(this.state.formInstructions) ? (
+                <GenerateActionsBar
+                  masterFormInstructionsSections={
+                    this.state.formInstructions.sections
+                  }
+                  activeSection={this.state.activeSection}
+                  handleSubmit={this.handleSubmit}
+                  handleNext={this.handleNext}
+                  handleBack={this.handleBack}
+                />
+              ) : (
+                ""
+              )}
             </div>
           </div>
         </div>

@@ -6,6 +6,10 @@ import {
   SectionsEntity,
 } from "../data/formInstructionTypes";
 import { messageText } from "./Helpers";
+import {
+  sectionsEntityTypeGuard,
+  sectionsEntityContentTypeGuard,
+} from "./TypeGuard";
 
 /**
  * Local interfaces
@@ -44,24 +48,6 @@ export default class GenerateSections extends React.Component<
   }
 
   /**
-   * Type Guard
-   */
-
-  // Single item of the section array
-  private sectionsEntityTypeGuard = (
-    item: FormInstructions["sections"]
-  ): item is SectionsEntity[] => {
-    return typeof item !== "undefined" && typeof item !== null;
-  };
-
-  // Content in the specific item of the section array
-  private sectionsEntityContentTypeGuard = (
-    item: SectionsEntity["content"]
-  ): item is ContentEntity[] => {
-    return typeof item !== "undefined" && typeof item !== null;
-  };
-
-  /**
    * Generate layout
    */
 
@@ -77,7 +63,7 @@ export default class GenerateSections extends React.Component<
       | (string | JSX.Element)[]
       | [] = [];
 
-    if (this.sectionsEntityTypeGuard(sections)) {
+    if (sectionsEntityTypeGuard(sections)) {
       // Check if sections array is empty
       if (sections.length) {
         // Let's fill the empty map array items with a string ""
@@ -95,9 +81,7 @@ export default class GenerateSections extends React.Component<
             let content = sections[index]["content"];
 
             // Test our content
-            fieldsList = this.sectionsEntityContentTypeGuard(content)
-              ? content
-              : [];
+            fieldsList = sectionsEntityContentTypeGuard(content) ? content : [];
 
             // Gen. a header
             const sectionHeader: JSX.Element = (
@@ -121,7 +105,7 @@ export default class GenerateSections extends React.Component<
             );
             return layout;
           } else {
-            return '';
+            return "";
           }
         });
       } else {
@@ -137,7 +121,7 @@ export default class GenerateSections extends React.Component<
     let layout: JSX.Element = <></>;
 
     // Test for undefined and null
-    const fieldsListTested = this.sectionsEntityContentTypeGuard(fieldsList)
+    const fieldsListTested = sectionsEntityContentTypeGuard(fieldsList)
       ? fieldsList
       : [];
 
