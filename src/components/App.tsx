@@ -1,7 +1,11 @@
 import React from "react";
 import GenerateSections from "./GenerateSections";
 import { SubmitAction } from "./FormActions";
-import formInstructions from "../data/formInstructions.json";
+import formInstructionsData from "../data/formInstructions.json";
+import { FormInstructions, SectionsEntity } from "../data/formInstructionTypes";
+
+// Add types to catch any errors during build
+const formInstructions: FormInstructions = formInstructionsData;
 
 /**
  * Local interfaces
@@ -19,12 +23,12 @@ export default class App extends React.Component<any, AppState> {
   public constructor(props: any) {
     super(props);
     this.state = {
-      activeSection: "about",
+      activeSection: "",
       masterFormDataEdited: {},
     };
 
     // SUBMIT
-    //this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
 
     // On change handlers
     this.handleInputFieldChange = this.handleInputFieldChange.bind(this);
@@ -32,12 +36,46 @@ export default class App extends React.Component<any, AppState> {
     this.handleRadioFieldChange = this.handleRadioFieldChange.bind(this);
   }
 
+  // Initiate on start
+  public componentDidMount = (): void => {
+    // Get the default active section, the first one
+    const sectionId: string =
+      this.sectionsEntityTypeGuard(formInstructions.sections) &&
+      formInstructions.sections.length
+        ? formInstructions.sections[0].id
+        : "";
+    this.setState({ ...this.state, activeSection: sectionId });
+  };
+
+  /**
+   * Type Guard
+   */
+
+  // Single item of the section array
+  private sectionsEntityTypeGuard = (
+    item: FormInstructions["sections"]
+  ): item is SectionsEntity[] => {
+    return typeof item !== "undefined" && typeof item !== null;
+  };
+
   // Submit
   private handleSubmit = (): void => {
     // Output to console by a request from the readme
-    console.log(`\n\n` + `%c > SUBMIT `, `background: #222; color: #bada55; font-size: 25px;`);
+    console.log(
+      `\n\n%c > SUBMIT `,
+      `background: #222; color: #bada55; font-size: 25px;`
+    );
     console.log(this.state.masterFormDataEdited);
-    console.log(`%c > success ` + `\n\n`, `background: #bada55; color: #fff; font-size: 15px;`);
+    console.log(
+      `%c > success \n\n`,
+      `background: #bada55; color: #fff; font-size: 15px;`
+    );
+  };
+
+  // Next and back
+  private handleNextBack = (): void => {
+    // Switch to the next section
+    // Switch to the previous section
   };
 
   // Fields change handler
@@ -103,6 +141,7 @@ export default class App extends React.Component<any, AppState> {
                * The form sections.
                */}
               <GenerateSections
+                activeSection={this.state.activeSection}
                 masterFormInstructionsSections={formInstructions.sections}
                 handleSubmit={this.handleSubmit}
                 handleInputFieldChange={this.handleInputFieldChange}

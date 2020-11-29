@@ -8,6 +8,10 @@ interface SubmitProps {
   handleSubmit: () => void;
 }
 
+/**
+ * Submit action for the Master Form 
+ */
+
 export class SubmitAction extends React.Component<SubmitProps, any> {
   public constructor(props: any) {
     super(props);

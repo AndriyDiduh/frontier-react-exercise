@@ -5,12 +5,14 @@ import {
   ContentEntity,
   SectionsEntity,
 } from "../data/formInstructionTypes";
+import { messageText } from "./Helpers";
 
 /**
  * Local interfaces
  */
 
 interface GenerateSectionsProps {
+  activeSection: string;
   masterFormInstructionsSections: FormInstructions["sections"];
   handleSubmit: () => void;
   handleInputFieldChange: (
@@ -69,48 +71,62 @@ export default class GenerateSections extends React.Component<
       .props.masterFormInstructionsSections;
 
     // Gen. a Section
-    let layoutComplete: JSX.Element[] | [] = [];
+    let layoutComplete:
+      | JSX.Element[]
+      | JSX.Element
+      | (string | JSX.Element)[]
+      | [] = [];
 
     if (this.sectionsEntityTypeGuard(sections)) {
-      layoutComplete = sections.map(
-        (val: SectionsEntity, index: number): JSX.Element => {
-          let id: string = sections[index]["id"];
-          let title: string = sections[index]["title"];
-          let fieldsList: ContentEntity[] = [];
+      // Check if sections array is empty
+      if (sections.length) {
+        // Let's fill the empty map array items with a string ""
+        layoutComplete = sections.map((val: SectionsEntity, index: number):
+          | JSX.Element
+          | string => {
+          // Switch to correct section
+          if (val.id === this.props.activeSection) {
+            let id: string = sections[index]["id"];
+            let title: string = sections[index]["title"];
+            let fieldsList: ContentEntity[] = [];
 
-          // Fix to deal with TypeScript "!predictable nature"
-          // - https://github.com/microsoft/TypeScript/issues/33391
-          let content = sections[index]["content"];
+            // Fix to deal with TypeScript "!predictable nature"
+            // - https://github.com/microsoft/TypeScript/issues/33391
+            let content = sections[index]["content"];
 
-          // Test our content
-          fieldsList = this.sectionsEntityContentTypeGuard(content)
-            ? content
-            : [];
+            // Test our content
+            fieldsList = this.sectionsEntityContentTypeGuard(content)
+              ? content
+              : [];
 
-          // Gen. a header
-          const sectionHeader: JSX.Element = (
-            <>
-              <div>Section Header</div>
-              <div>{id}</div>
-              <div>{title}</div>
-            </>
-          );
+            // Gen. a header
+            const sectionHeader: JSX.Element = (
+              <>
+                <div>Section Header</div>
+                <div>{id}</div>
+                <div>{title}</div>
+              </>
+            );
 
-          // Gen. a list of fields
-          const generatedListOfFields: JSX.Element = this.generateFieldsList(
-            fieldsList
-          );
+            // Gen. a list of fields
+            const generatedListOfFields: JSX.Element = this.generateFieldsList(
+              fieldsList
+            );
 
-          const layout: JSX.Element = (
-            <div key={index}>
-              {sectionHeader}
-              {generatedListOfFields}
-            </div>
-          );
-
-          return layout;
-        }
-      );
+            const layout: JSX.Element = (
+              <div key={index}>
+                {sectionHeader}
+                {generatedListOfFields}
+              </div>
+            );
+            return layout;
+          } else {
+            return '';
+          }
+        });
+      } else {
+        layoutComplete = <>{messageText.noSections}</>;
+      }
     }
 
     return <>{layoutComplete}</>;
