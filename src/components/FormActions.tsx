@@ -10,12 +10,14 @@ interface SubmitProps {
 
 interface NextProps {
   sectionId: string;
-  handleNext: (sectionId: string) => void;
+  sectionPositionNumber: number;
+  handleNext: (sectionId: string, sectionPositionNumber: number) => void;
 }
 
 interface BackProps {
   sectionId: string;
-  handleBack: (sectionId: string) => void;
+  sectionPositionNumber: number;
+  handleBack: (sectionId: string, sectionPositionNumber: number) => void;
 }
 
 /**
@@ -59,7 +61,7 @@ export class NextAction extends React.Component<NextProps, any> {
         <button
           type="button"
           className="actionTrigger nextTrigger"
-          onClick={() => this.props.handleNext(this.props.sectionId)}
+          onClick={() => this.props.handleNext(this.props.sectionId, this.props.sectionPositionNumber)}
         >
           Next
         </button>
@@ -84,7 +86,7 @@ export class BackAction extends React.Component<BackProps, any> {
         <button
           type="button"
           className="actionTrigger backTrigger"
-          onClick={() => this.props.handleBack(this.props.sectionId)}
+          onClick={() => this.props.handleBack(this.props.sectionId, this.props.sectionPositionNumber)}
         >
           Back
         </button>

@@ -17,6 +17,8 @@ const formInstructions: FormInstructions = formInstructionsData;
 
 interface AppState {
   activeSection: string;
+  activeSectionPosition: number;
+  sectionsCount: number;
   formInstructions: FormInstructions | {};
   masterFormDataEdited: Object;
 }
@@ -29,6 +31,8 @@ export default class App extends React.Component<any, AppState> {
     super(props);
     this.state = {
       activeSection: "",
+      activeSectionPosition: 0,
+      sectionsCount: 0,
       formInstructions: {},
       masterFormDataEdited: {},
     };
@@ -56,15 +60,26 @@ export default class App extends React.Component<any, AppState> {
   private openDefaultFormSection = (): void => {
     // Get the default active section, the first one
     let sectionId: string = "";
+    let sectionsCount: number = 0;
     if (formInstructionsTypeGuard(this.state.formInstructions)) {
       sectionId =
         sectionsEntityTypeGuard(this.state.formInstructions.sections) &&
         this.state.formInstructions.sections.length
           ? this.state.formInstructions.sections[0].id
           : "";
+      sectionsCount = sectionsEntityTypeGuard(
+        this.state.formInstructions.sections
+      )
+        ? this.state.formInstructions.sections.length
+        : 0;
     }
 
-    this.setState({ ...this.state, activeSection: sectionId });
+    this.setState({
+      ...this.state,
+      activeSection: sectionId,
+      activeSectionPosition: 1,
+      sectionsCount: sectionsCount,
+    });
   };
 
   // Submit
@@ -82,15 +97,29 @@ export default class App extends React.Component<any, AppState> {
   };
 
   // Next form
-  private handleNext = (sectionId: string): void => {
+  private handleNext = (
+    sectionId: string,
+    sectionPositionNumber: number
+  ): void => {
     // Switch to the next section
-    this.setState({ ...this.state, activeSection: sectionId });
+    this.setState({
+      ...this.state,
+      activeSectionPosition: sectionPositionNumber,
+      activeSection: sectionId,
+    });
   };
 
   // Back to the previous form
-  private handleBack = (sectionId: string): void => {
+  private handleBack = (
+    sectionId: string,
+    sectionPositionNumber: number
+  ): void => {
     // Switch to the previous section
-    this.setState({ ...this.state, activeSection: sectionId });
+    this.setState({
+      ...this.state,
+      activeSectionPosition: sectionPositionNumber,
+      activeSection: sectionId,
+    });
   };
 
   // Fields change handler
@@ -150,6 +179,12 @@ export default class App extends React.Component<any, AppState> {
               {/**
                * Provides a steps counter.
                */}
+              <div className="sectionsCounter">
+                <div className="sectionsCounter-inset">
+                  Step {this.state.activeSectionPosition} of{" "}
+                  {this.state.sectionsCount}
+                </div>
+              </div>
             </div>
             <div className="masterForm-content">
               {/**
