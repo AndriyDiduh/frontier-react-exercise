@@ -12,6 +12,17 @@ import {
 
 interface GenerateFieldProps {
   fieldData: ContentEntity;
+  handleInputFieldChange: (
+    e:
+      | React.ChangeEvent<HTMLInputElement>
+      | React.ChangeEvent<HTMLTextAreaElement>
+      | React.ChangeEvent<HTMLSelectElement>
+  ) => void;
+  handleSelectFieldChange: (
+    e: React.ChangeEvent<HTMLSelectElement>,
+    specialType: string
+  ) => void;
+  handleRadioFieldChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
 interface GenerateFieldState {}
@@ -84,6 +95,7 @@ export default class GenerateField extends React.Component<
           name={id}
           className="inputField fieldText"
           type="text"
+          onChange={(e) => this.props.handleInputFieldChange(e)}
           placeholder={placeholder}
           {...(required ? { required: true } : {})}
           {...{ minLength: this.fieldInputLimits.minLength }}
@@ -105,6 +117,7 @@ export default class GenerateField extends React.Component<
           id={id}
           name={id}
           className="inputField fieldTextArea"
+          onChange={(e) => this.props.handleInputFieldChange(e)}
           placeholder={placeholder}
           {...(required ? { required: true } : {})}
         ></textarea>
@@ -125,6 +138,7 @@ export default class GenerateField extends React.Component<
           name={id}
           className="inputField fieldNumber"
           type="number"
+          onChange={(e) => this.props.handleInputFieldChange(e)}
           placeholder={placeholder}
           {...(required ? { required: true } : {})}
           {...{ min: this.fieldNumberLimits.min }}
@@ -147,6 +161,7 @@ export default class GenerateField extends React.Component<
           name={id}
           className="inputField fieldEmail"
           type="email"
+          onChange={(e) => this.props.handleInputFieldChange(e)}
           placeholder={placeholder}
           pattern={pattern}
           {...(required ? { required: true } : {})}
@@ -172,6 +187,7 @@ export default class GenerateField extends React.Component<
           name={id}
           className="inputField fieldPhone"
           type="tel"
+          onChange={(e) => this.props.handleInputFieldChange(e)}
           placeholder={placeholder}
           pattern={pattern}
           {...(required ? { required: true } : {})}
@@ -196,6 +212,7 @@ export default class GenerateField extends React.Component<
           name={id}
           className="inputField fieldUrl"
           type="url"
+          onChange={(e) => this.props.handleInputFieldChange(e)}
           placeholder={placeholder}
           pattern={pattern}
           {...(required ? { required: true } : {})}
@@ -220,6 +237,7 @@ export default class GenerateField extends React.Component<
             name={id}
             className="boolSwitch-button buttonLeft"
             type="radio"
+            onChange={(e) => this.props.handleRadioFieldChange(e)}
             value="Yes"
           />
           <label htmlFor={id + "-yes"}>Yes</label>
@@ -228,6 +246,7 @@ export default class GenerateField extends React.Component<
             name={id}
             className="boolSwitch-button buttonRight"
             type="radio"
+            onChange={(e) => this.props.handleRadioFieldChange(e)}
             value="No"
           />
           <label htmlFor={id + "-no"}>No</label>
@@ -254,7 +273,12 @@ export default class GenerateField extends React.Component<
 
     return (
       <>
-        <select name={id} id={id} {...(required ? { required: true } : {})}>
+        <select
+          name={id}
+          id={id}
+          onChange={(e) => this.props.handleSelectFieldChange(e, "monochoice")}
+          {...(required ? { required: true } : {})}
+        >
           {optionsLayout}
         </select>
       </>
@@ -266,8 +290,8 @@ export default class GenerateField extends React.Component<
     required: boolean,
     options: OptionsEntity[]
   ): JSX.Element => {
-    // For the key "originStep", no proper explanation was provided to explain what that key means, 
-    // and how to use it, that's why I will not use "originStep" for now. 
+    // For the key "originStep", no proper explanation was provided to explain what that key means,
+    // and how to use it, that's why I will not use "originStep" for now.
 
     // Generate list
     const optionsLayout: JSX.Element[] = options.map(
@@ -285,6 +309,7 @@ export default class GenerateField extends React.Component<
         <select
           name={id}
           id={id}
+          onChange={(e) => this.props.handleSelectFieldChange(e, "multichoice")}
           {...(required ? { required: true } : {})}
           multiple
         >

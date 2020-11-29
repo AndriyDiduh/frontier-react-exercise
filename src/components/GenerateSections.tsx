@@ -12,6 +12,18 @@ import {
 
 interface GenerateSectionsProps {
   masterFormInstructionsSections: FormInstructions["sections"];
+  handleSubmit: () => void;
+  handleInputFieldChange: (
+    e:
+      | React.ChangeEvent<HTMLInputElement>
+      | React.ChangeEvent<HTMLTextAreaElement>
+      | React.ChangeEvent<HTMLSelectElement>
+  ) => void;
+  handleSelectFieldChange: (
+    e: React.ChangeEvent<HTMLSelectElement>,
+    specialType: string
+  ) => void;
+  handleRadioFieldChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
 interface GenerateSectionsState {}
@@ -56,7 +68,7 @@ export default class GenerateSections extends React.Component<
     const sections: GenerateSectionsProps["masterFormInstructionsSections"] = this
       .props.masterFormInstructionsSections;
 
-    // Gen. a Section 
+    // Gen. a Section
     let layoutComplete: JSX.Element[] | [] = [];
 
     if (this.sectionsEntityTypeGuard(sections)) {
@@ -116,7 +128,15 @@ export default class GenerateSections extends React.Component<
     const generatedFields: JSX.Element[] = fieldsListTested.map(
       (val: ContentEntity, index: number): JSX.Element => {
         // Generate a single field layout
-        return <GenerateField fieldData={val} key={index} />;
+        return (
+          <GenerateField
+            fieldData={val}
+            key={index}
+            handleInputFieldChange={this.props.handleInputFieldChange}
+            handleSelectFieldChange={this.props.handleSelectFieldChange}
+            handleRadioFieldChange={this.props.handleRadioFieldChange}
+          />
+        );
       }
     );
 
