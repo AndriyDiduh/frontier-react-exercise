@@ -366,7 +366,11 @@ body {
       background: #32bf62;
       background: linear-gradient(0deg, #32b35f 45%, #32bf62 55%);
       background: -webkit-linear-gradient(0deg, #32b35f 45%, #32bf62 55%);
-      background: -moz-linear-gradient(90deg, rgb(50, 179, 95) 45%, #32bf62 55%);
+      background: -moz-linear-gradient(
+        90deg,
+        rgb(50, 179, 95) 45%,
+        #32bf62 55%
+      );
       border: 0px solid #fff;
       height: 47px;
       width: 100%;
@@ -417,5 +421,23 @@ body {
     font-weight: 700;
     text-decoration: none;
     color: #1e54fc;
+  }
+}
+
+// Adapt to the screen size
+@media (max-height: 811px) {
+  .masterForm-holder {
+    position: relative;
+
+    .masterForm .headerIphoneHat-outset .headerIphoneHat-holder {
+      position: absolute;
+    }
+  }
+  .copyAndriyDiduh {
+    position: fixed;
+
+    a {
+      font-size: 13px;
+    }
   }
 }
