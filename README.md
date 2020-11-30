@@ -9,6 +9,8 @@ Feel free to visit my [Portfolio website ](https://andriydiduh.com).
 I hope you will launch this demo to see it in action, and I hope that you will Fork and not just copy ;) 
 
 .
+## Completion status: ~80-85%
+.
 
 
 # Frontier React Exercise

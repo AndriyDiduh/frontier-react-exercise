@@ -1,0 +1,421 @@
+// Main styles
+body {
+  padding: 0px;
+  margin: 0px;
+  font-family: "Arial", ui-sans-serif, sans-serif;
+  font-size: 15px;
+  background: #fff;
+}
+
+// Just a TEST of colors
+.colorTestPalette {
+  background: #ce342e;
+  background: #2ec8ce;
+  background: #f5f1ff;
+}
+
+/* 
+    Available colors from the Form Instructions
+    -------------------------------------------
+    var(--primary-color)
+    var(--secondary-color)
+    var(--background-color)
+*/
+
+// Master Form
+.masterForm-holder {
+  display: flex;
+  position: absolute;
+  flex-wrap: nowrap;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  align-content: center;
+  height: 100%;
+  width: 100%;
+
+  .masterForm {
+    display: block;
+    position: relative;
+    overflow: hidden;
+    flex: 0 0 auto;
+    background: #d9dee2;
+    border: 1px solid #bfc6cb;
+    min-width: 371px;
+    max-width: 371px;
+    min-height: 350px;
+    max-height: 810px;
+    height: 810px;
+    margin: 0px;
+    border-radius: 39px;
+    -webkit-border-radius: 39px;
+    -moz-border-radius: 39px;
+
+    .headerIphoneHat-outset {
+      display: block;
+      position: absolute;
+      width: 213px;
+      height: 39px;
+      margin: 0 auto;
+      margin-left: 21%;
+      margin-top: -1px;
+      overflow: hidden;
+      z-index: 1000;
+
+      .headerIphoneHat-holder {
+        display: block;
+        position: fixed;
+        width: 213px;
+        height: 39px;
+        margin: 0 auto;
+        overflow: hidden;
+        z-index: 1000;
+
+        .headerIphoneHat {
+          display: block;
+          width: 209px;
+          height: 51px;
+          background: #fff;
+          border: 1px solid #bfc6cb;
+          border-radius: 22px;
+          margin: 0 auto;
+          margin-top: -22px;
+        }
+      }
+    }
+
+    .masterForm-header {
+      display: flex;
+      position: relative;
+      flex-wrap: wrap;
+      flex-direction: row;
+      justify-content: flex-start;
+      align-items: auto;
+      align-content: flex-end;
+      background: #fff;
+      width: 100%;
+      height: 69px;
+
+      .sectionsCounter {
+        flex: 0 0 auto;
+        background: #edeff1;
+        min-width: 84px;
+        max-width: 125px;
+        height: 23px;
+        margin: 0px 0px 13px 11px;
+        border-radius: 12px;
+        -webkit-border-radius: 12px;
+        -moz-border-radius: 12px;
+
+        .sectionsCounter-inset {
+          line-height: 24px;
+          margin: 0px 3px;
+          text-align: center;
+          font-size: 13.6px;
+        }
+      }
+
+      .sectionProgressBar {
+        display: block;
+        position: relative;
+        width: 100%;
+        height: 3px;
+        background: #e7ebec;
+        margin-top: -3px;
+
+        .barFiller {
+          display: block;
+          position: relative;
+          width: 0%;
+          height: 3px;
+          background: #1e54fc;
+          transition: all 0.3s ease-in-out;
+          -webkit-transition: all 0.3s ease-in-out;
+          -moz-transition: all 0.3s ease-in-out;
+        }
+      }
+    }
+
+    .formSection-outset {
+      display: block;
+      position: relative;
+      overflow: hidden;
+      background: #f8fafa;
+      min-width: 150px;
+      max-width: 371px;
+      min-height: 350px;
+      max-height: 596px;
+      height: 800px;
+      border-radius: 13px;
+      -webkit-border-radius: 13px;
+      -moz-border-radius: 13px;
+      margin: 19px 13px;
+
+      .formSection {
+        display: block;
+        position: relative;
+        overflow: hidden;
+        overflow-y: auto;
+        background: #f8fafa;
+        min-width: 150px;
+        max-width: 371px;
+        min-height: 350px;
+        max-height: 596px;
+        height: 800px;
+        border-radius: 13px;
+        -webkit-border-radius: 13px;
+        -moz-border-radius: 13px;
+
+        .formSection-inset {
+          display: block;
+          position: relative;
+          width: auto;
+          margin: 0px 16px;
+
+          .sectionHeader {
+            display: block;
+            position: relative;
+            width: 100%;
+            height: 65px;
+
+            .sectionTitle {
+              display: block;
+              position: relative;
+              font-size: 20px;
+              font-weight: 700;
+              padding: 19px 0px 0px 0px;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+// Fields for the Master Form
+.fieldBlock-outset {
+  display: block;
+  position: relative;
+
+  &:last-child {
+    .fieldBlock {
+      min-height: 98px;
+
+      .fieldBlock-inset {
+        padding-bottom: 10px;
+      }
+    }
+  }
+
+  .fieldBlock {
+    display: block;
+    position: relative;
+    min-height: 108px;
+    max-height: 808px;
+
+    .fieldBlock-inset {
+      display: block;
+      position: relative;
+      padding-top: 8px;
+      padding-bottom: 15px;
+      //padding-bottom: 24px;
+
+      label.fieldTitle {
+        display: block;
+        position: relative;
+        width: 100%;
+        font-size: 17px;
+        line-height: 22px;
+        min-height: 25px;
+        margin-bottom: 4px;
+      }
+
+      .inputField,
+      .selectField {
+        display: block;
+        position: relative;
+        box-sizing: border-box;
+        background: #f2f4f6;
+        border: 2px solid #bbc3c9;
+        height: 47px;
+        width: 100%;
+        margin: 0px;
+        padding: 2px 14px;
+        font-size: 15.5px;
+        border-radius: 5px;
+        -webkit-border-radius: 5px;
+        -moz-border-radius: 5px;
+
+        &:focus {
+          outline: none;
+          border-color: #1e54fc;
+          -webkit-box-shadow: #1e54fc;
+          box-shadow: #1e54fc;
+        }
+
+        &.fieldTextArea {
+          padding-top: 12px;
+          padding-bottom: 12px;
+          width: 100%;
+          max-width: 100%;
+          min-width: 100%;
+          min-height: 118px;
+          font-family: "Arial", ui-sans-serif, sans-serif;
+
+          &:focus {
+            outline: none;
+            border-color: #1e54fc;
+            -webkit-box-shadow: #1e54fc;
+            box-shadow: #1e54fc;
+          }
+        }
+
+        &.multiSelect {
+          &:focus {
+            position: absolute;
+            height: 350px;
+            z-index: 100;
+          }
+        }
+      }
+
+      .boolSwitch {
+        label {
+          cursor: pointer;
+          display: block;
+          position: relative;
+          float: left;
+          box-sizing: border-box;
+          background: #f2f4f6;
+          border: 2px solid #bbc3c9;
+          width: 50%;
+          height: 47px;
+          padding: 0px;
+          margin: 0px;
+          text-align: center;
+          line-height: 44px;
+
+          &.labelLeft {
+            border-right-width: 1px;
+            border-top-left-radius: 5px;
+            border-bottom-left-radius: 5px;
+          }
+
+          &.labelRight {
+            border-left-width: 1px;
+            border-top-right-radius: 5px;
+            border-bottom-right-radius: 5px;
+          }
+        }
+
+        .boolSwitch-button {
+          display: block;
+          position: relative;
+          float: left;
+          box-sizing: border-box;
+          background: #f2f4f6;
+          border: 2px solid #bbc3c9;
+          width: 50%;
+          height: 47px;
+          padding: 0px;
+          margin: 0px;
+          display: none;
+
+          &:checked + label {
+            background: #1e54fc;
+            color: #fff;
+            border-color: #1e54fc;
+          }
+        }
+      }
+    }
+  }
+}
+
+// Action triggers for the Master Form
+.formActionsBar-outset {
+  display: block;
+  position: relative;
+  min-width: 150px;
+  max-width: 371px;
+  height: 87px;
+  margin: 0px 13px;
+
+  .formActionsBar {
+    display: block;
+    position: relative;
+    margin: 0px;
+    padding-top: 16px;
+
+    div:first-child {
+      display: flex;
+      flex-wrap: nowrap;
+      flex-direction: row;
+      justify-content: center;
+      align-items: baseline;
+      align-content: center;
+    }
+
+    .actionTrigger {
+      cursor: pointer;
+      display: block;
+      position: relative;
+      flex: 1 1 auto;
+      margin: 0px 0px;
+      box-sizing: border-box;
+      background: #32bf62;
+      background: linear-gradient(0deg, #32b35f 45%, #32bf62 55%);
+      background: -webkit-linear-gradient(0deg, #32b35f 45%, #32bf62 55%);
+      background: -moz-linear-gradient(0deg, rgb(50, 179, 95) 45%, #32bf62 55%);
+      border: 0px solid #fff;
+      height: 47px;
+      width: 100%;
+      margin: 0px;
+      padding: 2px 14px;
+      color: #fff;
+      font-size: 15.5px;
+      border-radius: 5px;
+      -webkit-border-radius: 5px;
+      -moz-border-radius: 5px;
+
+      &:focus {
+        outline: none;
+        background: #32b35f;
+        background: linear-gradient(0deg, #32bf62 45%, #32b35f 55%);
+        background: -webkit-linear-gradient(0deg, #32bf62 45%, #32b35f 55%);
+        background: -moz-linear-gradient(0deg, #32bf62 45%, #32b35f 55%);
+      }
+
+      &.backTrigger {
+        width: 30%;
+        background: #ce342e;
+        background: linear-gradient(0deg, #bb302a 45%, #ce342e 55%);
+        background: -webkit-linear-gradient(0deg, #bb302a 45%, #ce342e 55%);
+        background: -moz-linear-gradient(0deg, #bb302a 45%, #ce342e 55%);
+        margin-right: 13px;
+
+        &:focus {
+          outline: none;
+          background: #ce342e;
+          background: linear-gradient(0deg, #ce342e 45%, #bb302a 55%);
+          background: -webkit-linear-gradient(0deg, #ce342e 45%, #bb302a 55%);
+          background: -moz-linear-gradient(0deg, #ce342e 45%, #bb302a 55%);
+        }
+      }
+    }
+  }
+}
+
+// Copyright
+.copyAndriyDiduh {
+  position: absolute;
+  bottom: 10px;
+  right: 15px;
+
+  a {
+    font-size: 15px;
+    font-weight: 700;
+    text-decoration: none;
+    color: #1e54fc;
+  }
+}

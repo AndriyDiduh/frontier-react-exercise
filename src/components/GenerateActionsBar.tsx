@@ -40,6 +40,8 @@ export default class GenerateActionsBar extends React.Component<
     this.state = {};
   }
 
+  // Check the data 
+
   // Generate the correct button layout
   private generateButtonsLayout = (): JSX.Element => {
     let layout: JSX.Element | (JSX.Element | string)[] = <></>;
@@ -108,11 +110,7 @@ export default class GenerateActionsBar extends React.Component<
 
     // Just submit trigger for one section
     if (sectionsPositionList.length === 1) {
-      layout = (
-        <>
-          <SubmitAction handleSubmit={this.props.handleSubmit} />
-        </>
-      );
+      layout = <SubmitAction handleSubmit={this.props.handleSubmit} />;
     }
 
     // More triggers for 2 and more sections
@@ -171,6 +169,10 @@ export default class GenerateActionsBar extends React.Component<
   };
 
   public render = (): JSX.Element => {
-    return this.generateButtonsLayout();
+    return (
+      <div className="formActionsBar-outset">
+        <div className="formActionsBar">{this.generateButtonsLayout()}</div>
+      </div>
+    );
   };
 }

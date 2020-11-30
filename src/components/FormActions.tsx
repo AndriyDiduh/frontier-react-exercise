@@ -34,7 +34,7 @@ export class SubmitAction extends React.Component<SubmitProps, any> {
     return (
       <>
         <button
-          type="button"
+          type="submit"
           className="actionTrigger submitTrigger"
           onClick={() => this.props.handleSubmit()}
         >
@@ -59,9 +59,14 @@ export class NextAction extends React.Component<NextProps, any> {
     return (
       <>
         <button
-          type="button"
+          type="submit"
           className="actionTrigger nextTrigger"
-          onClick={() => this.props.handleNext(this.props.sectionId, this.props.sectionPositionNumber)}
+          onClick={() =>
+            this.props.handleNext(
+              this.props.sectionId,
+              this.props.sectionPositionNumber
+            )
+          }
         >
           Next
         </button>
@@ -86,7 +91,12 @@ export class BackAction extends React.Component<BackProps, any> {
         <button
           type="button"
           className="actionTrigger backTrigger"
-          onClick={() => this.props.handleBack(this.props.sectionId, this.props.sectionPositionNumber)}
+          onClick={() =>
+            this.props.handleBack(
+              this.props.sectionId,
+              this.props.sectionPositionNumber
+            )
+          }
         >
           Back
         </button>

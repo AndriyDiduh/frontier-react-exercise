@@ -18,6 +18,10 @@ import {
 interface GenerateSectionsProps {
   activeSection: string;
   masterFormInstructionsSections: FormInstructions["sections"];
+
+  // Here we do not need to check the types strictly, just pull one data that is available
+  masterFormDataEdited: any;
+
   handleSubmit: () => void;
   handleInputFieldChange: (
     e:
@@ -72,8 +76,8 @@ export default class GenerateSections extends React.Component<
           | string => {
           // Switch to correct section
           if (val.id === this.props.activeSection) {
-            let id: string = sections[index]["id"];
-            let title: string = sections[index]["title"];
+            const id: string = sections[index]["id"];
+            const title: string = sections[index]["title"];
             let fieldsList: ContentEntity[] = [];
 
             // Fix to deal with TypeScript "!predictable nature"
@@ -86,9 +90,9 @@ export default class GenerateSections extends React.Component<
             // Gen. a header
             const sectionHeader: JSX.Element = (
               <>
-                <div>Section Header</div>
-                <div>{id}</div>
-                <div>{title}</div>
+                <div className="sectionHeader">
+                  <div className="sectionTitle">{title}</div>
+                </div>
               </>
             );
 
@@ -98,7 +102,7 @@ export default class GenerateSections extends React.Component<
             );
 
             const layout: JSX.Element = (
-              <div key={index}>
+              <div key={index} id={id}>
                 {sectionHeader}
                 {generatedListOfFields}
               </div>
@@ -127,10 +131,14 @@ export default class GenerateSections extends React.Component<
 
     const generatedFields: JSX.Element[] = fieldsListTested.map(
       (val: ContentEntity, index: number): JSX.Element => {
+        // Get value and switch to bool (for radio buttons)
+        const fieldValue: string | boolean = this.props.masterFormDataEdited[val.id];
+
         // Generate a single field layout
         return (
           <GenerateField
             fieldData={val}
+            fieldEditedValState={fieldValue}
             key={index}
             handleInputFieldChange={this.props.handleInputFieldChange}
             handleSelectFieldChange={this.props.handleSelectFieldChange}
@@ -140,18 +148,19 @@ export default class GenerateSections extends React.Component<
       }
     );
 
-    layout = (
-      <>
-        Generated list
-        {generatedFields}
-      </>
-    );
+    layout = <>{generatedFields}</>;
 
     return layout;
   };
 
   // Render the full layout
   public render = (): JSX.Element => {
-    return <>{this.generateSections()}</>;
+    return (
+      <div className="formSection-outset">
+        <div className="formSection">
+          <div className="formSection-inset">{this.generateSections()}</div>
+        </div>
+      </div>
+    );
   };
 }

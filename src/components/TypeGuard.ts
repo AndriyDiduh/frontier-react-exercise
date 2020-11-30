@@ -51,3 +51,17 @@ export const sectionsEntityContentTypeGuard = (
 ): item is ContentEntity[] => {
   return typeof item !== "undefined" && typeof item !== null;
 };
+
+// If boolean
+export const theBooleanAgainstStringTypeGuard = (
+    item: boolean | string | any
+  ): item is boolean => {
+    return typeof item !== 'string' && !(item instanceof String);
+  };
+
+// If string
+export const theStringTypeGuard = (
+    item: boolean | string | any
+  ): item is string => {
+    return typeof item == 'string' || item instanceof String;
+  };
