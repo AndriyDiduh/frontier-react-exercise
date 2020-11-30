@@ -366,7 +366,7 @@ body {
       background: #32bf62;
       background: linear-gradient(0deg, #32b35f 45%, #32bf62 55%);
       background: -webkit-linear-gradient(0deg, #32b35f 45%, #32bf62 55%);
-      background: -moz-linear-gradient(0deg, rgb(50, 179, 95) 45%, #32bf62 55%);
+      background: -moz-linear-gradient(90deg, rgb(50, 179, 95) 45%, #32bf62 55%);
       border: 0px solid #fff;
       height: 47px;
       width: 100%;
@@ -383,7 +383,7 @@ body {
         background: #32b35f;
         background: linear-gradient(0deg, #32bf62 45%, #32b35f 55%);
         background: -webkit-linear-gradient(0deg, #32bf62 45%, #32b35f 55%);
-        background: -moz-linear-gradient(0deg, #32bf62 45%, #32b35f 55%);
+        background: -moz-linear-gradient(90deg, #32bf62 45%, #32b35f 55%);
       }
 
       &.backTrigger {
@@ -391,7 +391,7 @@ body {
         background: #ce342e;
         background: linear-gradient(0deg, #bb302a 45%, #ce342e 55%);
         background: -webkit-linear-gradient(0deg, #bb302a 45%, #ce342e 55%);
-        background: -moz-linear-gradient(0deg, #bb302a 45%, #ce342e 55%);
+        background: -moz-linear-gradient(90deg, #bb302a 45%, #ce342e 55%);
         margin-right: 13px;
 
         &:focus {
@@ -399,7 +399,7 @@ body {
           background: #ce342e;
           background: linear-gradient(0deg, #ce342e 45%, #bb302a 55%);
           background: -webkit-linear-gradient(0deg, #ce342e 45%, #bb302a 55%);
-          background: -moz-linear-gradient(0deg, #ce342e 45%, #bb302a 55%);
+          background: -moz-linear-gradient(90deg, #ce342e 45%, #bb302a 55%);
         }
       }
     }
