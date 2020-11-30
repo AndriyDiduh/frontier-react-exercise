@@ -10,6 +10,8 @@ I hope you will launch this demo to see it in action, and I hope that you will F
 
 .
 ## Completion status: ~80-85%
+[Click here, to launch the APP.](https://andriy-diduh-frontier-react-exercise.netlify.app/)
+
 .
 
 
