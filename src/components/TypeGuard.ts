@@ -14,42 +14,42 @@ import {
 export const formInstructionsTypeGuard = (
   item: FormInstructions | {}
 ): item is FormInstructions => {
-  return typeof item !== "undefined" && typeof item !== null;
+  return typeof item !== "undefined" && item !== null;
 };
 
 // Single item of the section array
 export const sectionsEntityTypeGuard = (
   item: FormInstructions["sections"]
 ): item is SectionsEntity[] => {
-  return typeof item !== "undefined" && typeof item !== null;
+  return typeof item !== "undefined" && item !== null;
 };
 
 // Check for the string in the metadata
 export const metadataStringTypeGuard = (
   item: string | null | undefined
 ): item is string => {
-  return typeof item !== "undefined" && typeof item !== null;
+  return typeof item !== "undefined" && item !== null;
 };
 
 // Check for the number in the metadata
 export const metadataNumberTypeGuard = (
   item: number | null | undefined
 ): item is number => {
-  return typeof item !== "undefined" && typeof item !== null;
+  return typeof item !== "undefined" && item !== null;
 };
 
 // Check for the options array
 export const metadataArrayTypeGuard = (
   item: Metadata["options"]
 ): item is OptionsEntity[] => {
-  return typeof item !== "undefined" && typeof item !== null;
+  return typeof item !== "undefined" && item !== null;
 };
 
 // Content in the specific item of the section array
 export const sectionsEntityContentTypeGuard = (
   item: SectionsEntity["content"]
 ): item is ContentEntity[] => {
-  return typeof item !== "undefined" && typeof item !== null;
+  return typeof item !== "undefined" && item !== null;
 };
 
 // If boolean
