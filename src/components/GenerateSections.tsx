@@ -1,15 +1,17 @@
 import React from "react";
 import GenerateField from "./GenerateField";
+import { messageText } from "./Helpers";
+import {
+  sectionsEntityTypeGuard,
+  sectionsEntityContentTypeGuard,
+  stringTypeGuard,
+} from "./TypeGuard";
 import {
   FormInstructions,
   ContentEntity,
   SectionsEntity,
 } from "../data/formInstructionTypes";
-import { messageText } from "./Helpers";
-import {
-  sectionsEntityTypeGuard,
-  sectionsEntityContentTypeGuard,
-} from "./TypeGuard";
+import { FormDataEdited, FieldDataEditedEntity } from "./mainTypes";
 
 /**
  * Local interfaces
@@ -18,22 +20,24 @@ import {
 interface GenerateSectionsProps {
   activeSection: string;
   masterFormInstructionsSections: FormInstructions["sections"];
-
-  // Here we do not need to check the types strictly, just pull one data that is available
-  masterFormDataEdited: any;
-
+  masterFormDataEdited: FormDataEdited;
   handleSubmit: () => void;
   handleInputFieldChange: (
     e:
       | React.ChangeEvent<HTMLInputElement>
       | React.ChangeEvent<HTMLTextAreaElement>
-      | React.ChangeEvent<HTMLSelectElement>
+      | React.ChangeEvent<HTMLSelectElement>,
+    required: boolean
   ) => void;
   handleSelectFieldChange: (
     e: React.ChangeEvent<HTMLSelectElement>,
+    required: boolean,
     specialType: string
   ) => void;
-  handleRadioFieldChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  handleRadioFieldChange: (
+    e: React.ChangeEvent<HTMLInputElement>,
+    required: boolean
+  ) => void;
 }
 
 interface GenerateSectionsState {}
@@ -67,6 +71,7 @@ export default class GenerateSections extends React.Component<
       | (string | JSX.Element)[]
       | [] = [];
 
+    // Execute if the SECTIONS key is present in the instructions
     if (sectionsEntityTypeGuard(sections)) {
       // Check if sections array is empty
       if (sections.length) {
@@ -129,10 +134,18 @@ export default class GenerateSections extends React.Component<
       ? fieldsList
       : [];
 
-    const generatedFields: JSX.Element[] = fieldsListTested.map(
+    const generatedFields: JSX.Element[] | string = fieldsListTested.map(
       (val: ContentEntity, index: number): JSX.Element => {
         // Get value and switch to bool (for radio buttons)
-        const fieldValue: string | boolean = this.props.masterFormDataEdited[val.id];
+        // But Check for Undefined and null first
+        const getFieldData: FieldDataEditedEntity | null | undefined = this
+          .props.masterFormDataEdited[val.id];
+
+        const fieldValue: string | string[] | boolean = stringTypeGuard(
+          getFieldData
+        )
+          ? getFieldData.value
+          : "";
 
         // Generate a single field layout
         return (

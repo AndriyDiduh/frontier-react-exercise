@@ -2,10 +2,16 @@ import React from "react";
 import GenerateSections from "./GenerateSections";
 import GenerateActionsBar from "./GenerateActionsBar";
 import formInstructionsData from "../data/formInstructions.json";
-import { FormInstructions } from "../data/formInstructionTypes";
+import {
+  FormInstructions,
+  SectionsEntity,
+  ContentEntity,
+} from "../data/formInstructionTypes";
+import { FormDataEdited } from "./mainTypes";
 import {
   formInstructionsTypeGuard,
   sectionsEntityTypeGuard,
+  sectionsEntityContentTypeGuard,
 } from "./TypeGuard";
 
 import "../styles/main.scss";
@@ -22,7 +28,7 @@ interface AppState {
   activeSectionPosition: number;
   sectionsCount: number;
   formInstructions: FormInstructions | {};
-  masterFormDataEdited: Object;
+  masterFormDataEdited: FormDataEdited;
 }
 
 /**
@@ -35,8 +41,8 @@ export default class App extends React.Component<any, AppState> {
       activeSection: "",
       activeSectionPosition: 0,
       sectionsCount: 0,
-      formInstructions: { "": "" },
-      masterFormDataEdited: { "": "" },
+      formInstructions: {},
+      masterFormDataEdited: {},
     };
 
     // SUBMIT , Next, Back
@@ -52,11 +58,52 @@ export default class App extends React.Component<any, AppState> {
 
   // Initiate on start
   public componentDidMount = (): void => {
+    // Fill the state with data according to the form instructions
+    const formFieldsState: FormDataEdited = this.buildFormStateByInstructions(
+      formInstructions
+    );
+
     // Put form instructions to state first
-    this.setState({ ...this.state, formInstructions: formInstructions }, () => {
-      this.openDefaultFormSection();
-      this.loadColorsInstructions();
-    });
+    this.setState(
+      {
+        ...this.state,
+        masterFormDataEdited: formFieldsState,
+        formInstructions: formInstructions,
+      },
+      () => {
+        this.openDefaultFormSection();
+        this.loadColorsInstructions();
+      }
+    );
+  };
+
+  // Build the local state of form fields from the instructions
+  private buildFormStateByInstructions = (
+    formInstructions: FormInstructions
+  ): FormDataEdited => {
+    let formFieldsState: FormDataEdited = {};
+
+    if (sectionsEntityTypeGuard(formInstructions.sections)) {
+      // Loop on Sections level
+      formInstructions.sections.map(
+        (section: SectionsEntity, index: number): any => {
+          if (sectionsEntityContentTypeGuard(section.content)) {
+            // Loop on Fields level
+            section.content.map((field: ContentEntity, index: number): any => {
+              formFieldsState[field.id] = {
+                section: this.getDefaultSectionId(),
+                value: "" || [],
+                required: field.metadata.required,
+                completed: false,
+                correct: false,
+              };
+            });
+          }
+        }
+      );
+    }
+
+    return formFieldsState;
   };
 
   // Load colors from the instructions data
@@ -78,17 +125,27 @@ export default class App extends React.Component<any, AppState> {
     }
   };
 
-  // Put the default section in view
-  private openDefaultFormSection = (): void => {
-    // Get the default active section, the first one
-    let sectionId: string = "";
-    let sectionsCount: number = 0;
+  // Get the default section if available from instructions in the state
+  private getDefaultSectionId = (): string => {
+    let sectionDefaultId: string = "";
+
     if (formInstructionsTypeGuard(this.state.formInstructions)) {
-      sectionId =
+      sectionDefaultId =
         sectionsEntityTypeGuard(this.state.formInstructions.sections) &&
         this.state.formInstructions.sections.length
           ? this.state.formInstructions.sections[0].id
           : "";
+    }
+
+    return sectionDefaultId;
+  };
+
+  // Put the default section in view
+  private openDefaultFormSection = (): void => {
+    // Get the default active section, the first one
+    let sectionDefaultId: string = this.getDefaultSectionId();
+    let sectionsCount: number = 0;
+    if (formInstructionsTypeGuard(this.state.formInstructions)) {
       sectionsCount = sectionsEntityTypeGuard(
         this.state.formInstructions.sections
       )
@@ -98,7 +155,7 @@ export default class App extends React.Component<any, AppState> {
 
     this.setState({
       ...this.state,
-      activeSection: sectionId,
+      activeSection: sectionDefaultId,
       activeSectionPosition: 1,
       sectionsCount: sectionsCount,
     });
@@ -128,7 +185,9 @@ export default class App extends React.Component<any, AppState> {
           ? this.state.formInstructions.sections[0].id
           : "",
         activeSectionPosition: 1,
-        masterFormDataEdited: {},
+        masterFormDataEdited: this.buildFormStateByInstructions(
+          this.state.formInstructions
+        ),
       });
     }
   };
@@ -159,24 +218,32 @@ export default class App extends React.Component<any, AppState> {
     });
   };
 
-  // Fields change handler
+  // Field change event handlers
   private handleInputFieldChange = (
     e:
       | React.ChangeEvent<HTMLInputElement>
       | React.ChangeEvent<HTMLTextAreaElement>
-      | React.ChangeEvent<HTMLSelectElement>
+      | React.ChangeEvent<HTMLSelectElement>,
+    required: boolean
   ): void => {
     this.setState({
       ...this.state,
       masterFormDataEdited: {
         ...this.state.masterFormDataEdited,
-        [e.currentTarget.id]: e.currentTarget.value,
+        [e.currentTarget.id]: {
+          section: this.state.activeSection,
+          value: e.currentTarget.value,
+          required: required,
+          completed: false,
+          correct: false,
+        },
       },
     });
   };
 
   private handleSelectFieldChange = (
     e: React.ChangeEvent<HTMLSelectElement>,
+    required: boolean,
     specialType: string
   ): void => {
     let val: string | number | string[] = e.currentTarget.value;
@@ -190,19 +257,32 @@ export default class App extends React.Component<any, AppState> {
       ...this.state,
       masterFormDataEdited: {
         ...this.state.masterFormDataEdited,
-        [e.currentTarget.id]: val,
+        [e.currentTarget.id]: {
+          section: this.state.activeSection,
+          value: val,
+          required: required,
+          completed: false,
+          correct: false,
+        },
       },
     });
   };
 
   private handleRadioFieldChange = (
-    e: React.ChangeEvent<HTMLInputElement>
+    e: React.ChangeEvent<HTMLInputElement>,
+    required: boolean
   ): void => {
     this.setState({
       ...this.state,
       masterFormDataEdited: {
         ...this.state.masterFormDataEdited,
-        [e.currentTarget.name]: e.target.value === "true" ? true : false,
+        [e.currentTarget.name]: {
+          section: this.state.activeSection,
+          value: e.target.value === "true" ? true : false,
+          required: required,
+          completed: false,
+          correct: false,
+        },
       },
     });
   };
@@ -269,6 +349,7 @@ export default class App extends React.Component<any, AppState> {
                   masterFormInstructionsSections={
                     this.state.formInstructions.sections
                   }
+                  masterFormDataEdited={this.state.masterFormDataEdited}
                   activeSection={this.state.activeSection}
                   handleSubmit={this.handleSubmit}
                   handleNext={this.handleNext}

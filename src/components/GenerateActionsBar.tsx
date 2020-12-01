@@ -1,6 +1,6 @@
 import React from "react";
 import { SubmitAction, NextAction, BackAction } from "./FormActions";
-import { FormInstructions, SectionsEntity } from "../data/formInstructionTypes";
+import { FormInstructions, SectionsEntity, ContentEntity } from "../data/formInstructionTypes";
 import { sectionsEntityTypeGuard } from "./TypeGuard";
 
 /**
@@ -10,6 +10,10 @@ import { sectionsEntityTypeGuard } from "./TypeGuard";
 interface GenerateActionsBarProps {
   activeSection: string;
   masterFormInstructionsSections: FormInstructions["sections"];
+
+  // Here we do not need to check the types strictly, just pull one data that is available
+  masterFormDataEdited: any;
+
   handleSubmit: () => void;
   handleNext: (sectionId: string, sectionPositionNumber: number) => void;
   handleBack: (sectionId: string, sectionPositionNumber: number) => void;
@@ -40,7 +44,7 @@ export default class GenerateActionsBar extends React.Component<
     this.state = {};
   }
 
-  // Check the data 
+  // Check the data
 
   // Generate the correct button layout
   private generateButtonsLayout = (): JSX.Element => {
@@ -112,7 +116,7 @@ export default class GenerateActionsBar extends React.Component<
     if (sectionsPositionList.length === 1) {
       layout = <SubmitAction handleSubmit={this.props.handleSubmit} />;
     }
-
+ 
     // More triggers for 2 and more sections
     if (sectionsPositionList.length > 1) {
       // Based on the position in array

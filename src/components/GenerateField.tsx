@@ -4,8 +4,8 @@ import {
   metadataStringTypeGuard,
   metadataNumberTypeGuard,
   metadataArrayTypeGuard,
-  theStringTypeGuard,
-  theBooleanAgainstStringTypeGuard,
+  stringNotBooleanTypeGuard,
+  booleanNotStringTypeGuard,
 } from "./TypeGuard";
 
 /**
@@ -14,18 +14,20 @@ import {
 
 interface GenerateFieldProps {
   fieldData: ContentEntity;
-  fieldEditedValState: string | boolean;
+  fieldEditedValState: string | string[] | boolean;
   handleInputFieldChange: (
     e:
       | React.ChangeEvent<HTMLInputElement>
       | React.ChangeEvent<HTMLTextAreaElement>
-      | React.ChangeEvent<HTMLSelectElement>
+      | React.ChangeEvent<HTMLSelectElement>,
+    required: boolean
   ) => void;
   handleSelectFieldChange: (
     e: React.ChangeEvent<HTMLSelectElement>,
+    required: boolean,
     specialType: string
   ) => void;
-  handleRadioFieldChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  handleRadioFieldChange: (e: React.ChangeEvent<HTMLInputElement>, required: boolean) => void;
 }
 
 interface GenerateFieldState {}
@@ -75,7 +77,7 @@ export default class GenerateField extends React.Component<
           name={id}
           className="inputField fieldText"
           type="text"
-          onChange={(e) => this.props.handleInputFieldChange(e)}
+          onChange={(e) => this.props.handleInputFieldChange(e, required)}
           placeholder={placeholder}
           value={fieldEditedValState}
           {...(required ? { required: true } : { required: false })}
@@ -99,7 +101,7 @@ export default class GenerateField extends React.Component<
           id={id}
           name={id}
           className="inputField fieldTextArea"
-          onChange={(e) => this.props.handleInputFieldChange(e)}
+          onChange={(e) => this.props.handleInputFieldChange(e, required)}
           placeholder={placeholder}
           value={fieldEditedValState}
           {...(required ? { required: true } : { required: false })}
@@ -108,7 +110,6 @@ export default class GenerateField extends React.Component<
     );
   };
 
-  // Templates for Fields
   private fieldNumber = (
     id: string,
     fieldEditedValState: string,
@@ -122,7 +123,7 @@ export default class GenerateField extends React.Component<
           name={id}
           className="inputField fieldNumber"
           type="number"
-          onChange={(e) => this.props.handleInputFieldChange(e)}
+          onChange={(e) => this.props.handleInputFieldChange(e, required)}
           placeholder={placeholder}
           value={fieldEditedValState}
           {...(required ? { required: true } : { required: false })}
@@ -147,7 +148,7 @@ export default class GenerateField extends React.Component<
           name={id}
           className="inputField fieldEmail"
           type="email"
-          onChange={(e) => this.props.handleInputFieldChange(e)}
+          onChange={(e) => this.props.handleInputFieldChange(e, required)}
           placeholder={placeholder}
           value={fieldEditedValState}
           pattern={pattern}
@@ -175,7 +176,7 @@ export default class GenerateField extends React.Component<
           name={id}
           className="inputField fieldPhone"
           type="tel"
-          onChange={(e) => this.props.handleInputFieldChange(e)}
+          onChange={(e) => this.props.handleInputFieldChange(e, required)}
           placeholder={placeholder}
           value={fieldEditedValState}
           pattern={pattern}
@@ -202,7 +203,7 @@ export default class GenerateField extends React.Component<
           name={id}
           className="inputField fieldUrl"
           type="url"
-          onChange={(e) => this.props.handleInputFieldChange(e)}
+          onChange={(e) => this.props.handleInputFieldChange(e, required)}
           placeholder={placeholder}
           value={fieldEditedValState}
           pattern={pattern}
@@ -232,7 +233,7 @@ export default class GenerateField extends React.Component<
             name={id}
             className="boolSwitch-button buttonLeft"
             type="radio"
-            onChange={(e) => this.props.handleRadioFieldChange(e)}
+            onChange={(e) => this.props.handleRadioFieldChange(e, required)}
             value="true"
             checked={fieldEditedValState === true ? true : false}
           />
@@ -244,7 +245,7 @@ export default class GenerateField extends React.Component<
             name={id}
             className="boolSwitch-button buttonRight"
             type="radio"
-            onChange={(e) => this.props.handleRadioFieldChange(e)}
+            onChange={(e) => this.props.handleRadioFieldChange(e, required)}
             value="false"
             checked={fieldEditedValState === false ? true : false}
           />
@@ -280,7 +281,7 @@ export default class GenerateField extends React.Component<
           id={id}
           value={fieldEditedValState}
           className="selectField monoSelect"
-          onChange={(e) => this.props.handleSelectFieldChange(e, "monochoice")}
+          onChange={(e) => this.props.handleSelectFieldChange(e, required, "monochoice")}
           {...(required ? { required: true } : { required: false })}
         >
           {optionsLayout}
@@ -315,7 +316,7 @@ export default class GenerateField extends React.Component<
           name={id}
           id={id}
           className="selectField multiSelect"
-          onChange={(e) => this.props.handleSelectFieldChange(e, "multichoice")}
+          onChange={(e) => this.props.handleSelectFieldChange(e, required, "multichoice")}
           {...(required ? { required: true } : { required: false })}
           multiple
         >
@@ -328,7 +329,7 @@ export default class GenerateField extends React.Component<
   // Generate field
   private generateField = (
     fieldItem: GenerateFieldProps["fieldData"],
-    fieldEditedValState: string | boolean
+    fieldEditedValState: string | string[] | boolean
   ): JSX.Element => {
     let layout: JSX.Element = <></>;
     let field: JSX.Element = <></>;
@@ -360,18 +361,18 @@ export default class GenerateField extends React.Component<
       case "location": {
         field = this.fieldText(
           fieldItem.id,
-          theStringTypeGuard(fieldEditedValState)
+          stringNotBooleanTypeGuard(fieldEditedValState)
             ? fieldEditedValState || ""
             : "",
           placeholder,
-          fieldItem.metadata.required
+          fieldItem.metadata.required,
         );
         break;
       }
       case "textarea": {
         field = this.fieldTextArea(
           fieldItem.id,
-          theStringTypeGuard(fieldEditedValState)
+          stringNotBooleanTypeGuard(fieldEditedValState)
             ? fieldEditedValState || ""
             : "",
           placeholder,
@@ -382,7 +383,7 @@ export default class GenerateField extends React.Component<
       case "number": {
         field = this.fieldNumber(
           fieldItem.id,
-          theStringTypeGuard(fieldEditedValState)
+          stringNotBooleanTypeGuard(fieldEditedValState)
             ? fieldEditedValState || ""
             : "",
           placeholder,
@@ -393,7 +394,7 @@ export default class GenerateField extends React.Component<
       case "email": {
         field = this.fieldEmail(
           fieldItem.id,
-          theStringTypeGuard(fieldEditedValState)
+          stringNotBooleanTypeGuard(fieldEditedValState)
             ? fieldEditedValState || ""
             : "",
           placeholder,
@@ -405,7 +406,7 @@ export default class GenerateField extends React.Component<
       case "phone": {
         field = this.fieldPhone(
           fieldItem.id,
-          theStringTypeGuard(fieldEditedValState)
+          stringNotBooleanTypeGuard(fieldEditedValState)
             ? fieldEditedValState || ""
             : "",
           placeholder,
@@ -418,7 +419,7 @@ export default class GenerateField extends React.Component<
       case "url": {
         field = this.fieldUrl(
           fieldItem.id,
-          theStringTypeGuard(fieldEditedValState)
+          stringNotBooleanTypeGuard(fieldEditedValState)
             ? fieldEditedValState || ""
             : "",
           placeholder,
@@ -430,7 +431,7 @@ export default class GenerateField extends React.Component<
       case "boolean": {
         field = this.boolSwitch(
           fieldItem.id,
-          theBooleanAgainstStringTypeGuard(fieldEditedValState)
+          booleanNotStringTypeGuard(fieldEditedValState)
             ? fieldEditedValState
             : false,
           fieldItem.metadata.required
@@ -440,7 +441,7 @@ export default class GenerateField extends React.Component<
       case "monochoice": {
         field = this.selectMonoList(
           fieldItem.id,
-          theStringTypeGuard(fieldEditedValState)
+          stringNotBooleanTypeGuard(fieldEditedValState)
             ? fieldEditedValState || ""
             : "",
           fieldItem.metadata.required,
@@ -451,7 +452,7 @@ export default class GenerateField extends React.Component<
       case "multichoice": {
         field = this.selectMultiList(
           fieldItem.id,
-          theStringTypeGuard(fieldEditedValState)
+          stringNotBooleanTypeGuard(fieldEditedValState)
             ? fieldEditedValState || ""
             : "",
           fieldItem.metadata.required,

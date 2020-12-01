@@ -52,16 +52,22 @@ export const sectionsEntityContentTypeGuard = (
   return typeof item !== "undefined" && item !== null;
 };
 
-// If boolean
-export const theBooleanAgainstStringTypeGuard = (
-    item: boolean | string | any
-  ): item is boolean => {
-    return typeof item !== 'string' && !(item instanceof String);
-  };
+// If boolean but not a string
+export const booleanNotStringTypeGuard = (
+  item: boolean | string | any
+): item is boolean => {
+  return typeof item !== "string" && !(item instanceof String);
+};
 
-// If string
-export const theStringTypeGuard = (
-    item: boolean | string | any
-  ): item is string => {
-    return typeof item == 'string' || item instanceof String;
-  };
+// If string but not a boolean
+export const stringNotBooleanTypeGuard = (
+  item: boolean | string | any
+): item is string => {
+  return typeof item == "string" || item instanceof String;
+};
+
+// If string is not undefined and not null
+export const stringTypeGuard = (item: any): item is object => {
+  return typeof item !== "undefined" && item !== null;
+};
+
