@@ -1,6 +1,6 @@
 # Completed by Andriy Diduh 
 .
-## Completion status: ~97%
+## Completion status: 100%
 [Click here, to launch the APP.](https://andriy-diduh-frontier-react-exercise.netlify.app/)
 
 .
@@ -17,15 +17,26 @@ I hope you will launch this demo to see it in action, and I hope that you will F
 
 The code, types, and styles are written completely from scratch.
 
-Added packages: 
+### Added packages: 
 - "enzyme" + "enzyme adapter" to help with testing on Jest,
 - multiselect component,
 - node sass for importing .scss.
 
+### Added features and completed requirements:
+- field validation with patterns and messaged,
+- next and submit after all required fields are filled correct,
+- on submit, displays alert ('Results were logged to the console!') and outputs the saved fields data to the console,
+- added 2 tests with Jest
+- added one react hook for the copyright at the bottom right
+- strongly typed code, the "any" type used at bare minimum (use search in a code editor for ": any") usually to point Empty props for components or as a wildcard where it makes sense
+- by default ES6 syntax is used.
+- styling is done from scratch in an .scss file with the imported Google Roboto Font.
 
 .
 
-## A few question are still not well explained in the Exercise Description below.
+.
+
+## A few questions to the "Frontier React Exercise" description.
 
 - 1 - Where to use the colors from the form_instructions.json > "theme"?
 
@@ -35,9 +46,7 @@ Added packages:
 
 - 4 - Not provided the names of the used fonts in the mockup.
 
-- 5 - Url and Ulr Skype type fields are missing the "pattern" in form_instructions.json for the correct validation. This leads to not fully correct work of the APP in the "optional" section, please fix "on the backend".
-
-.
+- 5 - Url and Ulr Skype type fields are missing the "pattern" in form_instructions.json for the correct validation (that should be supplied from the back-end). This leads to not fully correct work of the APP in the "optional" section, please fix "on the backend" (in the .json file).
 
 .
 
