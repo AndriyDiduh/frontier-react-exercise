@@ -1,6 +1,7 @@
 import React from "react";
 import GenerateSections from "./GenerateSections";
 import GenerateActionsBar from "./GenerateActionsBar";
+import CopyReactHook from "./CopyFooterReactHook";
 import formInstructionsData from "../data/formInstructions.json";
 import {
   FormInstructions,
@@ -100,17 +101,19 @@ export default class App extends React.Component<any, AppState> {
         (section: SectionsEntity, index: number): void => {
           if (sectionsEntityContentTypeGuard(section.content)) {
             // Loop on Fields level
-            section.content.forEach((field: ContentEntity, index: number): void => {
-              formFieldsState[field.id] = {
-                section: section.id,
-                value: "" || [],
-                required: field.metadata.required,
-                filled: false,
-                correct: false,
-                error: false,
-                msg: "",
-              };
-            });
+            section.content.forEach(
+              (field: ContentEntity, index: number): void => {
+                formFieldsState[field.id] = {
+                  section: section.id,
+                  value: "" || [],
+                  required: field.metadata.required,
+                  filled: false,
+                  correct: false,
+                  error: false,
+                  msg: "",
+                };
+              }
+            );
           }
         }
       );
@@ -484,9 +487,10 @@ export default class App extends React.Component<any, AppState> {
             </div>
           </div>
         </div>
-        <div className="copyAndriyDiduh">
-          <a href="https://andriydiduh.com">by Andriy Diduh</a>
-        </div>
+        <CopyReactHook
+          author="Andriy Diduh"
+          webLink="https://andriydiduh.com"
+        />
       </>
     );
   };
