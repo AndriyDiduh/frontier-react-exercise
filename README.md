@@ -1,4 +1,9 @@
 # Completed by Andriy Diduh 
+.
+## Completion status: ~97%
+[Click here, to launch the APP.](https://andriy-diduh-frontier-react-exercise.netlify.app/)
+
+.
 
 hi, my name is Andriy  <br />
 and I'm a software engineer, <br />
@@ -9,11 +14,34 @@ Feel free to visit my [Portfolio website ](https://andriydiduh.com).
 I hope you will launch this demo to see it in action, and I hope that you will Fork and not just copy ;) 
 
 .
-## Completion status: ~80-85%
-[Click here, to launch the APP.](https://andriy-diduh-frontier-react-exercise.netlify.app/)
+
+The code, types, and styles are written completely from scratch.
+
+Added packages: 
+- "enzyme" + "enzyme adapter" to help with testing on Jest,
+- multiselect component,
+- node sass for importing .scss.
+
 
 .
 
+## A few question are still not well explained in the Exercise Description below.
+
+- 1 - Where to use the colors from the form_instructions.json > "theme"?
+
+- 2 - What does the "originStep" in the "multichoice" field type in form_instructions.json do?
+
+- 3 - Not provided visual screens of other sections, to see what design to implement.
+
+- 4 - Not provided the names of the used fonts in the mockup.
+
+- 5 - Url and Ulr Skype type fields are missing the "pattern" in form_instructions.json for the correct validation. This leads to not fully correct work of the APP in the "optional" section, please fix "on the backend".
+
+.
+
+.
+
+.
 
 # Frontier React Exercise
 
