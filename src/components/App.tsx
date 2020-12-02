@@ -96,11 +96,11 @@ export default class App extends React.Component<any, AppState> {
 
     if (sectionsEntityTypeGuard(formInstructions.sections)) {
       // Loop on Sections level
-      formInstructions.sections.map(
-        (section: SectionsEntity, index: number): any => {
+      formInstructions.sections.forEach(
+        (section: SectionsEntity, index: number): void => {
           if (sectionsEntityContentTypeGuard(section.content)) {
             // Loop on Fields level
-            section.content.map((field: ContentEntity, index: number): any => {
+            section.content.forEach((field: ContentEntity, index: number): void => {
               formFieldsState[field.id] = {
                 section: section.id,
                 value: "" || [],

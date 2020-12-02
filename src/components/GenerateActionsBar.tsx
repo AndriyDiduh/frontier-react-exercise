@@ -1,6 +1,6 @@
 import React from "react";
 import { SubmitAction, NextAction, BackAction } from "./FormActions";
-import { FormInstructions, SectionsEntity, ContentEntity } from "../data/formInstructionTypes";
+import { FormInstructions, SectionsEntity } from "../data/formInstructionTypes";
 import { sectionsEntityTypeGuard } from "./TypeGuard";
 
 /**
