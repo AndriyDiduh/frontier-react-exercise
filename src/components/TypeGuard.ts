@@ -5,6 +5,7 @@ import {
   OptionsEntity,
   Metadata,
 } from "../data/formInstructionTypes";
+import { FormDataEdited, FieldDataEditedEntity } from "./mainTypes";
 
 /**
  * Type Guard
@@ -71,3 +72,23 @@ export const stringTypeGuard = (item: any): item is object => {
   return typeof item !== "undefined" && item !== null;
 };
 
+// FormDataEdited check
+export const formDataEditedTypeGuard = (
+    item: FormDataEdited | undefined | null
+  ): item is FormDataEdited => {
+    return typeof item !== "undefined" && item !== null;
+  };
+
+// FieldDataEditedEntity check
+export const fieldDataEditedEntityTypeGuard = (
+  item: FieldDataEditedEntity | undefined | null
+): item is FieldDataEditedEntity => {
+  return typeof item !== "undefined" && item !== null;
+};
+
+// For multi select component data check check
+export const dataMultiSelectTypeGuard = (
+    item: string | boolean | { value: string; label: string; }[]
+  ): item is { value: string; label: string; }[] => {
+    return typeof item !== "undefined" && item !== null;
+  };

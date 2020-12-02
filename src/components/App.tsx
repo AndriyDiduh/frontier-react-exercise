@@ -7,11 +7,12 @@ import {
   SectionsEntity,
   ContentEntity,
 } from "../data/formInstructionTypes";
-import { FormDataEdited } from "./mainTypes";
+import { FormDataEdited, FieldDataEditedEntity } from "./mainTypes";
 import {
   formInstructionsTypeGuard,
   sectionsEntityTypeGuard,
   sectionsEntityContentTypeGuard,
+  fieldDataEditedEntityTypeGuard,
 } from "./TypeGuard";
 
 import "../styles/main.scss";
@@ -48,31 +49,41 @@ export default class App extends React.Component<any, AppState> {
     // SUBMIT , Next, Back
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleNext = this.handleNext.bind(this);
-    this.handleBack = this.handleNext.bind(this);
+    this.handleBack = this.handleBack.bind(this);
 
     // On change handlers
     this.handleInputFieldChange = this.handleInputFieldChange.bind(this);
     this.handleSelectFieldChange = this.handleSelectFieldChange.bind(this);
+    this.handleMultiSelectFieldChange = this.handleMultiSelectFieldChange.bind(
+      this
+    );
     this.handleRadioFieldChange = this.handleRadioFieldChange.bind(this);
   }
 
   // Initiate on start
   public componentDidMount = (): void => {
-    // Fill the state with data according to the form instructions
-    const formFieldsState: FormDataEdited = this.buildFormStateByInstructions(
-      formInstructions
-    );
-
     // Put form instructions to state first
     this.setState(
       {
         ...this.state,
-        masterFormDataEdited: formFieldsState,
         formInstructions: formInstructions,
       },
       () => {
-        this.openDefaultFormSection();
-        this.loadColorsInstructions();
+        // Fill the state with data according to the form instructions
+        const formFieldsState: FormDataEdited = this.buildFormStateByInstructions(
+          formInstructions
+        );
+        // Then create the default data for the fields edited values
+        this.setState(
+          {
+            ...this.state,
+            masterFormDataEdited: formFieldsState,
+          },
+          () => {
+            this.openDefaultFormSection();
+            this.loadColorsInstructions();
+          }
+        );
       }
     );
   };
@@ -91,11 +102,13 @@ export default class App extends React.Component<any, AppState> {
             // Loop on Fields level
             section.content.map((field: ContentEntity, index: number): any => {
               formFieldsState[field.id] = {
-                section: this.getDefaultSectionId(),
+                section: section.id,
                 value: "" || [],
                 required: field.metadata.required,
-                completed: false,
+                filled: false,
                 correct: false,
+                error: false,
+                msg: "",
               };
             });
           }
@@ -163,32 +176,40 @@ export default class App extends React.Component<any, AppState> {
 
   // Submit
   private handleSubmit = (): void => {
-    // Output to console by a request from the readme
-    console.log(
-      `\n\n%c > SUBMIT `,
-      `background: #222; color: #bada55; font-size: 25px;`
-    );
-    console.log(this.state.masterFormDataEdited);
-    console.log(
-      `%c > success \n\n`,
-      `background: #bada55; color: #fff; font-size: 15px;`
-    );
-    alert("Results were logged to the console!");
+    // Check if the form is filled correct
+    if (
+      this.checkFormFieldsFilled(
+        this.state.activeSection,
+        this.state.masterFormDataEdited
+      )
+    ) {
+      // Output to console by a request from the readme
+      console.log(
+        `\n\n%c > SUBMIT `,
+        `background: #222; color: #bada55; font-size: 25px;`
+      );
+      console.log(this.state.masterFormDataEdited);
+      console.log(
+        `%c > success \n\n`,
+        `background: #bada55; color: #fff; font-size: 15px;`
+      );
+      alert("Results were logged to the console!");
 
-    // Clear the form
-    if (formInstructionsTypeGuard(this.state.formInstructions)) {
-      this.setState({
-        ...this.state,
-        activeSection: sectionsEntityTypeGuard(
-          this.state.formInstructions.sections
-        )
-          ? this.state.formInstructions.sections[0].id
-          : "",
-        activeSectionPosition: 1,
-        masterFormDataEdited: this.buildFormStateByInstructions(
-          this.state.formInstructions
-        ),
-      });
+      // Clear the form
+      if (formInstructionsTypeGuard(this.state.formInstructions)) {
+        this.setState({
+          ...this.state,
+          activeSection: sectionsEntityTypeGuard(
+            this.state.formInstructions.sections
+          )
+            ? this.state.formInstructions.sections[0].id
+            : "",
+          activeSectionPosition: 1,
+          masterFormDataEdited: this.buildFormStateByInstructions(
+            this.state.formInstructions
+          ),
+        });
+      }
     }
   };
 
@@ -197,12 +218,20 @@ export default class App extends React.Component<any, AppState> {
     sectionId: string,
     sectionPositionNumber: number
   ): void => {
-    // Switch to the next section
-    this.setState({
-      ...this.state,
-      activeSectionPosition: sectionPositionNumber,
-      activeSection: sectionId,
-    });
+    // Check if the form is filled correct
+    if (
+      this.checkFormFieldsFilled(
+        this.state.activeSection,
+        this.state.masterFormDataEdited
+      )
+    ) {
+      // Switch to the next section
+      this.setState({
+        ...this.state,
+        activeSectionPosition: sectionPositionNumber,
+        activeSection: sectionId,
+      });
+    }
   };
 
   // Back to the previous form
@@ -210,6 +239,7 @@ export default class App extends React.Component<any, AppState> {
     sectionId: string,
     sectionPositionNumber: number
   ): void => {
+    console.log(sectionId);
     // Switch to the previous section
     this.setState({
       ...this.state,
@@ -218,24 +248,77 @@ export default class App extends React.Component<any, AppState> {
     });
   };
 
+  // Check all fields in the form
+  private checkFormFieldsFilled = (
+    activeSection: string,
+    formDataEditedState: FormDataEdited
+  ): boolean => {
+    let filled: boolean = true;
+
+    // Build copy of the edited fields, check, and put back to state
+    const formStateShallowCopy: any = Object.assign({}, formDataEditedState);
+
+    // Extract data to array
+    const formDataEdited: [
+      string,
+      FieldDataEditedEntity | null | undefined
+    ][] = Object.entries(formDataEditedState);
+
+    // Iterate through array
+    for (const [fieldId, fieldData] of formDataEdited) {
+      if (fieldDataEditedEntityTypeGuard(fieldData)) {
+        // Only for the Active section
+        if (fieldData.section === activeSection) {
+          // Write an error to fields data if empty and required
+          formStateShallowCopy[fieldId].error =
+            !fieldData.filled && fieldData.required ? true : false;
+
+          // Form is Not filled if One field is empty while required
+          if ((!fieldData.filled || !fieldData.correct) && fieldData.required) {
+            filled = false;
+          }
+        }
+      }
+    }
+
+    // Write to state
+    this.setState({
+      ...this.state,
+      masterFormDataEdited: formStateShallowCopy,
+    });
+
+    return filled;
+  };
+
   // Field change event handlers
   private handleInputFieldChange = (
     e:
       | React.ChangeEvent<HTMLInputElement>
       | React.ChangeEvent<HTMLTextAreaElement>
       | React.ChangeEvent<HTMLSelectElement>,
-    required: boolean
+    required: boolean,
+    pattern?: RegExp
   ): void => {
+    // Check the input
+    const value: string = e.currentTarget.value;
+    const filled: boolean = value.replace(/\s/g, "").length > 0 ? true : false;
+    const validity: boolean = e.target.validity.valid;
+    const correct: boolean = validity ? true : false; // For patterns
+    const error: boolean = !filled && required && !correct ? true : false;
+    const msg: string = e.target.validationMessage;
+
     this.setState({
       ...this.state,
       masterFormDataEdited: {
         ...this.state.masterFormDataEdited,
         [e.currentTarget.id]: {
           section: this.state.activeSection,
-          value: e.currentTarget.value,
+          value: value,
           required: required,
-          completed: false,
-          correct: false,
+          filled: filled,
+          correct: correct,
+          error: error,
+          msg: msg,
         },
       },
     });
@@ -246,12 +329,11 @@ export default class App extends React.Component<any, AppState> {
     required: boolean,
     specialType: string
   ): void => {
-    let val: string | number | string[] = e.currentTarget.value;
-
-    // If we handle multi select field
-    if (specialType === "multichoice") {
-      val = Array.from(e.target.selectedOptions, (option) => option.value);
-    }
+    // Check the select
+    const value: string | number | string[] = e.currentTarget.value;
+    const filled: boolean = value.replace(/\s/g, "").length > 0 ? true : false;
+    const correct: boolean = filled ? true : false; // For patterns
+    const error: boolean = !filled && required && !correct ? true : false;
 
     this.setState({
       ...this.state,
@@ -259,10 +341,40 @@ export default class App extends React.Component<any, AppState> {
         ...this.state.masterFormDataEdited,
         [e.currentTarget.id]: {
           section: this.state.activeSection,
-          value: val,
+          value: value,
           required: required,
-          completed: false,
-          correct: false,
+          filled: filled,
+          correct: correct,
+          error: error,
+          msg: "",
+        },
+      },
+    });
+  };
+
+  private handleMultiSelectFieldChange = (
+    e: { value: string; label: string }[],
+    required: boolean,
+    id: string
+  ): void => {
+    // Check the select
+    const value: { value: string; label: string }[] = e;
+    const filled: boolean = value.length > 0 ? true : false;
+    const correct: boolean = filled ? true : false; // For patterns
+    const error: boolean = !filled && required && !correct ? true : false;
+
+    this.setState({
+      ...this.state,
+      masterFormDataEdited: {
+        ...this.state.masterFormDataEdited,
+        [id]: {
+          section: this.state.activeSection,
+          value: value,
+          required: required,
+          filled: filled,
+          correct: correct,
+          error: error,
+          msg: "",
         },
       },
     });
@@ -272,16 +384,24 @@ export default class App extends React.Component<any, AppState> {
     e: React.ChangeEvent<HTMLInputElement>,
     required: boolean
   ): void => {
+    // Check the radio group
+    const value: boolean = e.target.value === "true" ? true : false;
+    const filled: boolean = true;
+    const correct: boolean = filled ? true : false; // Reserved for pattern to Force Format the field
+    const error: boolean = !filled && required && !correct ? true : false;
+
     this.setState({
       ...this.state,
       masterFormDataEdited: {
         ...this.state.masterFormDataEdited,
         [e.currentTarget.name]: {
           section: this.state.activeSection,
-          value: e.target.value === "true" ? true : false,
+          value: value,
           required: required,
-          completed: false,
-          correct: false,
+          filled: filled,
+          correct: correct,
+          error: error,
+          msg: "",
         },
       },
     });
@@ -334,6 +454,9 @@ export default class App extends React.Component<any, AppState> {
                   handleSubmit={this.handleSubmit}
                   handleInputFieldChange={this.handleInputFieldChange}
                   handleSelectFieldChange={this.handleSelectFieldChange}
+                  handleMultiSelectFieldChange={
+                    this.handleMultiSelectFieldChange
+                  }
                   handleRadioFieldChange={this.handleRadioFieldChange}
                 />
               ) : (

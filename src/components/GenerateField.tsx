@@ -1,4 +1,5 @@
 import React from "react";
+import MultiSelect from "react-multi-select-component";
 import { ContentEntity, OptionsEntity } from "../data/formInstructionTypes";
 import {
   metadataStringTypeGuard,
@@ -6,7 +7,9 @@ import {
   metadataArrayTypeGuard,
   stringNotBooleanTypeGuard,
   booleanNotStringTypeGuard,
+  dataMultiSelectTypeGuard,
 } from "./TypeGuard";
+import { FieldDataEditedEntity } from "./mainTypes";
 
 /**
  * Local interfaces
@@ -14,7 +17,7 @@ import {
 
 interface GenerateFieldProps {
   fieldData: ContentEntity;
-  fieldEditedValState: string | string[] | boolean;
+  fieldEditedDataState: FieldDataEditedEntity;
   handleInputFieldChange: (
     e:
       | React.ChangeEvent<HTMLInputElement>
@@ -27,7 +30,15 @@ interface GenerateFieldProps {
     required: boolean,
     specialType: string
   ) => void;
-  handleRadioFieldChange: (e: React.ChangeEvent<HTMLInputElement>, required: boolean) => void;
+  handleMultiSelectFieldChange: (
+    e: { value: string; label: string }[],
+    required: boolean,
+    id: string
+  ) => void;
+  handleRadioFieldChange: (
+    e: React.ChangeEvent<HTMLInputElement>,
+    required: boolean
+  ) => void;
 }
 
 interface GenerateFieldState {}
@@ -68,14 +79,23 @@ export default class GenerateField extends React.Component<
     id: string,
     fieldEditedValState: string,
     placeholder: string,
-    required: boolean
+    required: boolean,
+    filled: boolean,
+    correct: boolean,
+    error: boolean,
+    msg: string
   ): JSX.Element => {
     return (
       <>
         <input
           id={id}
           name={id}
-          className="inputField fieldText"
+          className={
+            "inputField fieldText" +
+            (filled ? " filled" : " empty") +
+            (correct ? " correct" : " incorrect") +
+            (error ? " error" : "")
+          }
           type="text"
           onChange={(e) => this.props.handleInputFieldChange(e, required)}
           placeholder={placeholder}
@@ -85,6 +105,7 @@ export default class GenerateField extends React.Component<
           {...{ maxLength: this.fieldInputLimits.maxLength }}
           {...{ size: this.fieldInputLimits.size }}
         />
+        {msg.length > 0 ? <div className="errorFieldMsg">{msg}</div> : ""}
       </>
     );
   };
@@ -93,19 +114,29 @@ export default class GenerateField extends React.Component<
     id: string,
     fieldEditedValState: string,
     placeholder: string,
-    required: boolean
+    required: boolean,
+    filled: boolean,
+    correct: boolean,
+    error: boolean,
+    msg: string
   ): JSX.Element => {
     return (
       <>
         <textarea
           id={id}
           name={id}
-          className="inputField fieldTextArea"
+          className={
+            "inputField fieldTextArea" +
+            (filled ? " filled" : " empty") +
+            (correct ? " correct" : " incorrect") +
+            (error ? " error" : "")
+          }
           onChange={(e) => this.props.handleInputFieldChange(e, required)}
           placeholder={placeholder}
           value={fieldEditedValState}
           {...(required ? { required: true } : { required: false })}
         ></textarea>
+        {msg.length > 0 ? <div className="errorFieldMsg">{msg}</div> : ""}
       </>
     );
   };
@@ -114,14 +145,23 @@ export default class GenerateField extends React.Component<
     id: string,
     fieldEditedValState: string,
     placeholder: string,
-    required: boolean
+    required: boolean,
+    filled: boolean,
+    correct: boolean,
+    error: boolean,
+    msg: string
   ): JSX.Element => {
     return (
       <>
         <input
           id={id}
           name={id}
-          className="inputField fieldNumber"
+          className={
+            "inputField fieldNumber" +
+            (filled ? " filled" : " empty") +
+            (correct ? " correct" : " incorrect") +
+            (error ? " error" : "")
+          }
           type="number"
           onChange={(e) => this.props.handleInputFieldChange(e, required)}
           placeholder={placeholder}
@@ -130,6 +170,7 @@ export default class GenerateField extends React.Component<
           {...{ min: this.fieldNumberLimits.min }}
           {...{ max: this.fieldNumberLimits.max }}
         />
+        {msg.length > 0 ? <div className="errorFieldMsg">{msg}</div> : ""}
       </>
     );
   };
@@ -139,14 +180,23 @@ export default class GenerateField extends React.Component<
     fieldEditedValState: string,
     placeholder: string,
     required: boolean,
-    pattern: string
+    pattern: string,
+    filled: boolean,
+    correct: boolean,
+    error: boolean,
+    msg: string
   ): JSX.Element => {
     return (
       <>
         <input
           id={id}
           name={id}
-          className="inputField fieldEmail"
+          className={
+            "inputField fieldEmail" +
+            (filled ? " filled" : " empty") +
+            (correct ? " correct" : " incorrect") +
+            (error ? " error" : "")
+          }
           type="email"
           onChange={(e) => this.props.handleInputFieldChange(e, required)}
           placeholder={placeholder}
@@ -157,6 +207,7 @@ export default class GenerateField extends React.Component<
           {...{ maxLength: this.fieldInputLimits.maxLength }}
           {...{ size: this.fieldInputLimits.size }}
         />
+        {msg.length > 0 ? <div className="errorFieldMsg">{msg}</div> : ""}
       </>
     );
   };
@@ -167,14 +218,23 @@ export default class GenerateField extends React.Component<
     placeholder: string,
     required: boolean,
     pattern: string,
-    maxLength: number
+    maxLength: number,
+    filled: boolean,
+    correct: boolean,
+    error: boolean,
+    msg: string
   ): JSX.Element => {
     return (
       <>
         <input
           id={id}
           name={id}
-          className="inputField fieldPhone"
+          className={
+            "inputField fieldPhone" +
+            (filled ? " filled" : " empty") +
+            (correct ? " correct" : " incorrect") +
+            (error ? " error" : "")
+          }
           type="tel"
           onChange={(e) => this.props.handleInputFieldChange(e, required)}
           placeholder={placeholder}
@@ -185,6 +245,7 @@ export default class GenerateField extends React.Component<
           {...{ maxLength: maxLength }}
           {...{ size: this.fieldInputLimits.size }}
         />
+        {msg.length > 0 ? <div className="errorFieldMsg">{msg}</div> : ""}
       </>
     );
   };
@@ -194,14 +255,23 @@ export default class GenerateField extends React.Component<
     fieldEditedValState: string,
     placeholder: string,
     required: boolean,
-    pattern: string
+    pattern: string,
+    filled: boolean,
+    correct: boolean,
+    error: boolean,
+    msg: string
   ): JSX.Element => {
     return (
       <>
         <input
           id={id}
           name={id}
-          className="inputField fieldUrl"
+          className={
+            "inputField fieldUrl" +
+            (filled ? " filled" : " empty") +
+            (correct ? " correct" : " incorrect") +
+            (error ? " error" : "")
+          }
           type="url"
           onChange={(e) => this.props.handleInputFieldChange(e, required)}
           placeholder={placeholder}
@@ -212,6 +282,7 @@ export default class GenerateField extends React.Component<
           {...{ maxLength: this.fieldInputLimits.maxLength }}
           {...{ size: this.fieldInputLimits.size }}
         />
+        {msg.length > 0 ? <div className="errorFieldMsg">{msg}</div> : ""}
       </>
     );
   };
@@ -219,7 +290,10 @@ export default class GenerateField extends React.Component<
   private boolSwitch = (
     id: string,
     fieldEditedValState: boolean,
-    required: boolean
+    required: boolean,
+    filled: boolean,
+    correct: boolean,
+    error: boolean
   ): JSX.Element => {
     return (
       <>
@@ -231,25 +305,51 @@ export default class GenerateField extends React.Component<
           <input
             id={id + "-yes"}
             name={id}
-            className="boolSwitch-button buttonLeft"
+            className={
+              "boolSwitch-button buttonLeft" +
+              (filled ? " filled" : " empty") +
+              (correct ? " correct" : " incorrect") +
+              (error ? " error" : "")
+            }
             type="radio"
             onChange={(e) => this.props.handleRadioFieldChange(e, required)}
             value="true"
             checked={fieldEditedValState === true ? true : false}
           />
-          <label htmlFor={id + "-yes"} className="labelLeft">
+          <label
+            htmlFor={id + "-yes"}
+            className={
+              "boolSwitch-label labelLeft" +
+              (filled ? " filled" : " empty") +
+              (correct ? " correct" : " incorrect") +
+              (error ? " error" : "")
+            }
+          >
             Yes
           </label>
           <input
             id={id + "-no"}
             name={id}
-            className="boolSwitch-button buttonRight"
+            className={
+              "boolSwitch-button buttonRight" +
+              (filled ? " filled" : " empty") +
+              (correct ? " correct" : " incorrect") +
+              (error ? " error" : "")
+            }
             type="radio"
             onChange={(e) => this.props.handleRadioFieldChange(e, required)}
             value="false"
             checked={fieldEditedValState === false ? true : false}
           />
-          <label htmlFor={id + "-no"} className="labelRight">
+          <label
+            htmlFor={id + "-no"}
+            className={
+              "boolSwitch-label labelRight" +
+              (filled ? " filled" : " empty") +
+              (correct ? " correct" : " incorrect") +
+              (error ? " error" : "")
+            }
+          >
             No
           </label>
         </div>
@@ -261,7 +361,11 @@ export default class GenerateField extends React.Component<
     id: string,
     fieldEditedValState: string,
     required: boolean,
-    options: OptionsEntity[]
+    options: OptionsEntity[],
+    filled: boolean,
+    correct: boolean,
+    error: boolean,
+    msg: string
   ): JSX.Element => {
     // Generate list
     const optionsLayout: JSX.Element[] = options.map(
@@ -276,187 +380,234 @@ export default class GenerateField extends React.Component<
 
     return (
       <>
+        <span className="selectField-arrow"></span>
         <select
           name={id}
           id={id}
           value={fieldEditedValState}
-          className="selectField monoSelect"
-          onChange={(e) => this.props.handleSelectFieldChange(e, required, "monochoice")}
+          className={
+            "selectField monoSelect" +
+            (filled ? " filled" : " empty") +
+            (correct ? " correct" : " incorrect") +
+            (error ? " error" : "")
+          }
+          onChange={(e) =>
+            this.props.handleSelectFieldChange(e, required, "monochoice")
+          }
           {...(required ? { required: true } : { required: false })}
         >
           {optionsLayout}
         </select>
+        {msg.length > 0 ? <div className="errorFieldMsg">{msg}</div> : ""}
       </>
     );
   };
 
   private selectMultiList = (
     id: string,
-    fieldEditedValState: string,
+    fieldEditedValState: { value: string; label: string }[],
     required: boolean,
-    options: OptionsEntity[]
+    options: OptionsEntity[],
+    filled: boolean,
+    correct: boolean,
+    error: boolean,
+    msg: string
   ): JSX.Element => {
     // For the key "originStep", no proper explanation was provided to explain what that key means,
     // and how to use it, that's why I will not use "originStep" for now.
 
-    // Generate list
-    const optionsLayout: JSX.Element[] = options.map(
-      (val: OptionsEntity, index: number): JSX.Element => {
-        return (
-          <option key={index} value={val.value}>
-            {val.label}
-          </option>
-        );
-      }
-    );
-
     return (
-      <>
-        <select
-          name={id}
-          id={id}
-          className="selectField multiSelect"
-          onChange={(e) => this.props.handleSelectFieldChange(e, required, "multichoice")}
-          {...(required ? { required: true } : { required: false })}
-          multiple
-        >
-          {optionsLayout}
-        </select>
-      </>
+      <MultiSelect
+        className={
+          "multiSelect" +
+          (filled ? " filled" : " empty") +
+          (correct ? " correct" : " incorrect") +
+          (error ? " error" : "")
+        }
+        options={options}
+        value={fieldEditedValState}
+        hasSelectAll={false}
+        onChange={(e: any) =>
+          this.props.handleMultiSelectFieldChange(e, required, id)
+        }
+        labelledBy={"Select"}
+      />
     );
   };
 
   // Generate field
   private generateField = (
-    fieldItem: GenerateFieldProps["fieldData"],
-    fieldEditedValState: string | string[] | boolean
+    fieldItemInstructions: GenerateFieldProps["fieldData"],
+    fieldItemEditedDataState: GenerateFieldProps["fieldEditedDataState"]
   ): JSX.Element => {
     let layout: JSX.Element = <></>;
     let field: JSX.Element = <></>;
 
-    // Test for undefined and null
+    // Instructions
+    const id: string = fieldItemInstructions.id;
+    let required: boolean = fieldItemInstructions.metadata.required;
+
+    // Test the Field Instructions for undefined and null
     let placeholder: string = "";
-    if (metadataStringTypeGuard(fieldItem.metadata.placeholder)) {
-      placeholder = fieldItem.metadata.placeholder;
+    if (metadataStringTypeGuard(fieldItemInstructions.metadata.placeholder)) {
+      placeholder = fieldItemInstructions.metadata.placeholder;
     }
 
     let pattern: string = "";
-    if (metadataStringTypeGuard(fieldItem.metadata.pattern)) {
-      pattern = fieldItem.metadata.pattern;
+    if (metadataStringTypeGuard(fieldItemInstructions.metadata.pattern)) {
+      pattern = fieldItemInstructions.metadata.pattern;
     }
 
     let options: OptionsEntity[] = [];
-    if (metadataArrayTypeGuard(fieldItem.metadata.options)) {
-      options = fieldItem.metadata.options;
+    if (metadataArrayTypeGuard(fieldItemInstructions.metadata.options)) {
+      options = fieldItemInstructions.metadata.options;
     }
 
     let maxLength: number = 0;
-    if (metadataNumberTypeGuard(fieldItem.metadata.maxlength)) {
-      maxLength = fieldItem.metadata.maxlength;
+    if (metadataNumberTypeGuard(fieldItemInstructions.metadata.maxlength)) {
+      maxLength = fieldItemInstructions.metadata.maxlength;
+    }
+
+    // Edited state
+    const filledValState: boolean = fieldItemEditedDataState.filled;
+    const correctValState: boolean = fieldItemEditedDataState.correct;
+    const errorValState: boolean = fieldItemEditedDataState.error;
+    const errorMsgState: string = fieldItemEditedDataState.msg;
+    let multiSelectValState: { value: string; label: string }[] = [];
+    if (dataMultiSelectTypeGuard(fieldItemEditedDataState.value)) {
+      multiSelectValState = fieldItemEditedDataState.value;
+    }
+
+    // Test the Edited Field Data
+    let stringValState: string = "";
+    if (stringNotBooleanTypeGuard(fieldItemEditedDataState.value)) {
+      stringValState = fieldItemEditedDataState.value;
+    }
+
+    let booleanValState: boolean = false;
+    if (booleanNotStringTypeGuard(fieldItemEditedDataState.value)) {
+      booleanValState = fieldItemEditedDataState.value;
     }
 
     // Switch to the correct field type
-    switch (fieldItem.type) {
+    switch (fieldItemInstructions.type) {
       case "text":
       case "location": {
         field = this.fieldText(
-          fieldItem.id,
-          stringNotBooleanTypeGuard(fieldEditedValState)
-            ? fieldEditedValState || ""
-            : "",
+          id,
+          stringValState,
           placeholder,
-          fieldItem.metadata.required,
+          required,
+          filledValState,
+          correctValState,
+          errorValState,
+          errorMsgState
         );
         break;
       }
       case "textarea": {
         field = this.fieldTextArea(
-          fieldItem.id,
-          stringNotBooleanTypeGuard(fieldEditedValState)
-            ? fieldEditedValState || ""
-            : "",
+          id,
+          stringValState,
           placeholder,
-          fieldItem.metadata.required
+          required,
+          filledValState,
+          correctValState,
+          errorValState,
+          errorMsgState
         );
         break;
       }
       case "number": {
         field = this.fieldNumber(
-          fieldItem.id,
-          stringNotBooleanTypeGuard(fieldEditedValState)
-            ? fieldEditedValState || ""
-            : "",
+          id,
+          stringValState,
           placeholder,
-          fieldItem.metadata.required
+          required,
+          filledValState,
+          correctValState,
+          errorValState,
+          errorMsgState
         );
         break;
       }
       case "email": {
         field = this.fieldEmail(
-          fieldItem.id,
-          stringNotBooleanTypeGuard(fieldEditedValState)
-            ? fieldEditedValState || ""
-            : "",
+          id,
+          stringValState,
           placeholder,
-          fieldItem.metadata.required,
-          pattern
+          required,
+          pattern,
+          filledValState,
+          correctValState,
+          errorValState,
+          errorMsgState
         );
         break;
       }
       case "phone": {
         field = this.fieldPhone(
-          fieldItem.id,
-          stringNotBooleanTypeGuard(fieldEditedValState)
-            ? fieldEditedValState || ""
-            : "",
+          id,
+          stringValState,
           placeholder,
-          fieldItem.metadata.required,
+          required,
           pattern,
-          maxLength
+          maxLength,
+          filledValState,
+          correctValState,
+          errorValState,
+          errorMsgState
         );
         break;
       }
       case "url": {
         field = this.fieldUrl(
-          fieldItem.id,
-          stringNotBooleanTypeGuard(fieldEditedValState)
-            ? fieldEditedValState || ""
-            : "",
+          id,
+          stringValState,
           placeholder,
-          fieldItem.metadata.required,
-          pattern
+          required,
+          pattern,
+          filledValState,
+          correctValState,
+          errorValState,
+          errorMsgState
         );
         break;
       }
       case "boolean": {
         field = this.boolSwitch(
-          fieldItem.id,
-          booleanNotStringTypeGuard(fieldEditedValState)
-            ? fieldEditedValState
-            : false,
-          fieldItem.metadata.required
+          id,
+          booleanValState,
+          required,
+          filledValState,
+          correctValState,
+          errorValState
         );
         break;
       }
       case "monochoice": {
         field = this.selectMonoList(
-          fieldItem.id,
-          stringNotBooleanTypeGuard(fieldEditedValState)
-            ? fieldEditedValState || ""
-            : "",
-          fieldItem.metadata.required,
-          options
+          id,
+          stringValState,
+          required,
+          options,
+          filledValState,
+          correctValState,
+          errorValState,
+          errorMsgState
         );
         break;
       }
       case "multichoice": {
         field = this.selectMultiList(
-          fieldItem.id,
-          stringNotBooleanTypeGuard(fieldEditedValState)
-            ? fieldEditedValState || ""
-            : "",
-          fieldItem.metadata.required,
-          options
+          id,
+          multiSelectValState,
+          required,
+          options,
+          filledValState,
+          correctValState,
+          errorValState,
+          errorMsgState
         );
         break;
       }
@@ -467,8 +618,8 @@ export default class GenerateField extends React.Component<
       <div className="fieldBlock-outset">
         <div className="fieldBlock">
           <div className="fieldBlock-inset">
-            <label htmlFor={fieldItem.id} className="fieldTitle">
-              {fieldItem.question_text}
+            <label htmlFor={fieldItemInstructions.id} className="fieldTitle">
+              {fieldItemInstructions.question_text}
             </label>
             {field}
           </div>
@@ -483,7 +634,7 @@ export default class GenerateField extends React.Component<
   public render = (): JSX.Element => {
     return this.generateField(
       this.props.fieldData,
-      this.props.fieldEditedValState
+      this.props.fieldEditedDataState
     );
   };
 }

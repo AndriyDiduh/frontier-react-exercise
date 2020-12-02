@@ -2,10 +2,12 @@
 
 export interface FieldDataEditedEntity {
   section: string;
-  value: string | string[] | boolean;
+  value: string | { value: string; label: string }[] | boolean;
   required: boolean;
-  completed: boolean;
+  filled: boolean;
   correct: boolean;
+  error: boolean;
+  msg: string;
 }
 
 export interface FormDataEdited {

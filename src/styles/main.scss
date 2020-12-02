@@ -1,8 +1,11 @@
+// Fonts
+@import url("https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap");
+
 // Main styles
 body {
   padding: 0px;
   margin: 0px;
-  font-family: "Arial", ui-sans-serif, sans-serif;
+  font-family: "Roboto", Arial, sans-serif;
   font-size: 15px;
   background: #fff;
 }
@@ -218,7 +221,6 @@ body {
       position: relative;
       padding-top: 8px;
       padding-bottom: 15px;
-      //padding-bottom: 24px;
 
       label.fieldTitle {
         display: block;
@@ -231,7 +233,8 @@ body {
       }
 
       .inputField,
-      .selectField {
+      .selectField,
+      .multiSelect .dropdown-container {
         display: block;
         position: relative;
         box-sizing: border-box;
@@ -246,11 +249,20 @@ body {
         -webkit-border-radius: 5px;
         -moz-border-radius: 5px;
 
+        &.error {
+          background-color: #ffe1e1;
+          border-color: red;
+        }
+
+        // Disable red field when checking by a pattern
+        &.filled.incorrect.error {
+          background-color: #bbc3c9;
+          border-color: #f2f4f6;
+        }
+
         &:focus {
           outline: none;
           border-color: #1e54fc;
-          -webkit-box-shadow: #1e54fc;
-          box-shadow: #1e54fc;
         }
 
         &.fieldTextArea {
@@ -260,13 +272,23 @@ body {
           max-width: 100%;
           min-width: 100%;
           min-height: 118px;
+          max-height: 350px;
           font-family: "Arial", ui-sans-serif, sans-serif;
 
           &:focus {
             outline: none;
             border-color: #1e54fc;
-            -webkit-box-shadow: #1e54fc;
-            box-shadow: #1e54fc;
+          }
+
+          &.error {
+            background-color: #ffe1e1;
+            border-color: red;
+          }
+
+          // Disable red field when checking by a pattern
+          &.filled.incorrect.error {
+            background-color: #bbc3c9;
+            border-color: #f2f4f6;
           }
         }
 
@@ -276,6 +298,73 @@ body {
             height: 350px;
             z-index: 100;
           }
+
+          &.error {
+            background-color: #ffe1e1;
+            border-color: red;
+          }
+        }
+      }
+
+      .selectField {
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+
+        &:focus ~ .selectField-arrow {
+          filter: FlipV;
+          transform: scaleY(-1);
+          -webkit-transform: scaleY(-1);
+          -moz-transform: scaleY(-1);
+        }
+      }
+
+      .selectField-arrow {
+        display: block;
+        position: relative;
+        width: 24px;
+        height: 24px;
+        float: right;
+        margin-top: 10px;
+        margin-bottom: -50px;
+        margin-right: 17px;
+        pointer-events: none;
+        background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' fill='none' stroke='%23aaa' stroke-width='2'%3E%3Cpath d='M6 9L12 15 18 9'%3E%3C/path%3E%3C/svg%3E")
+          no-repeat right center;
+        z-index: 10;
+        transition: all 0.2s ease;
+      }
+
+      // 3rd party Multi Select component re-styling
+      .multiSelect {
+        .dropdown-heading {
+          padding: 2px 1px;
+
+          .dropdown-heading-value {
+            .gray {
+              color: #000;
+            }
+          }
+        }
+
+        .dropdown-container {
+          .dropdown-content {
+            margin-left: -14px;
+            padding-left: 0px;
+
+            .select-panel input {
+              padding-left: 19px;
+            }
+
+            label.select-item {
+              padding-left: 19px;
+            }
+          }
+        }
+
+        &.error .dropdown-container {
+          background-color: #ffe1e1;
+          border-color: red;
         }
       }
 
@@ -299,12 +388,22 @@ body {
             border-right-width: 1px;
             border-top-left-radius: 5px;
             border-bottom-left-radius: 5px;
+
+            &.error {
+              border-color: red;
+              border-right-color: #bbc3c9;
+            }
           }
 
           &.labelRight {
             border-left-width: 1px;
             border-top-right-radius: 5px;
             border-bottom-right-radius: 5px;
+
+            &.error {
+              border-color: red;
+              border-left-color: #bbc3c9;
+            }
           }
         }
 
@@ -327,6 +426,26 @@ body {
             border-color: #1e54fc;
           }
         }
+      }
+
+      .errorFieldMsg {
+        display: block;
+        position: absolute;
+        font-size: 12px;
+        font-weight: 700;
+        color: #1d1d1d;
+        margin-top: 4px;
+        width: 100%;
+        background: #ffeb3b;
+        box-sizing: border-box;
+        padding: 5px 6px;
+        border-radius: 5px;
+        -webkit-border-radius: 5px;
+        -moz-border-radius: 5px;
+        box-shadow: 0px 6px 6px -8px #00000073, 0px 0px 2px 0px #cacaca;
+        -webkit-box-shadow: 0px 6px 6px -8px #00000073, 0px 0px 2px 0px #cacaca;
+        -moz-box-shadow: 0px 6px 6px -8px #00000073, 0px 0px 2px 0px #cacaca;
+        z-index: 100;
       }
     }
   }
@@ -384,6 +503,10 @@ body {
 
       &:focus {
         outline: none;
+      }
+
+      &:active {
+        outline: none;
         background: #32b35f;
         background: linear-gradient(0deg, #32bf62 45%, #32b35f 55%);
         background: -webkit-linear-gradient(0deg, #32bf62 45%, #32b35f 55%);
@@ -399,6 +522,10 @@ body {
         margin-right: 13px;
 
         &:focus {
+          outline: none;
+        }
+
+        &:active {
           outline: none;
           background: #ce342e;
           background: linear-gradient(0deg, #ce342e 45%, #bb302a 55%);

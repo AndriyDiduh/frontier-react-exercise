@@ -4,7 +4,7 @@ import { messageText } from "./Helpers";
 import {
   sectionsEntityTypeGuard,
   sectionsEntityContentTypeGuard,
-  stringTypeGuard,
+  fieldDataEditedEntityTypeGuard,
 } from "./TypeGuard";
 import {
   FormInstructions,
@@ -31,6 +31,11 @@ interface GenerateSectionsProps {
   ) => void;
   handleSelectFieldChange: (
     e: React.ChangeEvent<HTMLSelectElement>,
+    required: boolean,
+    id: string
+  ) => void;
+  handleMultiSelectFieldChange: (
+    e: { value: string; label: string }[],
     required: boolean,
     specialType: string
   ) => void;
@@ -138,23 +143,38 @@ export default class GenerateSections extends React.Component<
       (val: ContentEntity, index: number): JSX.Element => {
         // Get value and switch to bool (for radio buttons)
         // But Check for Undefined and null first
-        const getFieldData: FieldDataEditedEntity | null | undefined = this
-          .props.masterFormDataEdited[val.id];
-
-        const fieldValue: string | string[] | boolean = stringTypeGuard(
-          getFieldData
+        const fieldValueTypeCheck:
+          | FieldDataEditedEntity
+          | undefined
+          | null = fieldDataEditedEntityTypeGuard(
+          this.props.masterFormDataEdited[val.id]
         )
-          ? getFieldData.value
-          : "";
+          ? this.props.masterFormDataEdited[val.id]
+          : null;
+
+        const fieldValue: FieldDataEditedEntity = fieldDataEditedEntityTypeGuard(
+          fieldValueTypeCheck
+        )
+          ? fieldValueTypeCheck
+          : {
+              section: "",
+              value: "" || [],
+              required: false,
+              filled: false,
+              correct: false,
+              error: false,
+              msg: "",
+            };
 
         // Generate a single field layout
         return (
           <GenerateField
             fieldData={val}
-            fieldEditedValState={fieldValue}
+            fieldEditedDataState={fieldValue}
             key={index}
             handleInputFieldChange={this.props.handleInputFieldChange}
             handleSelectFieldChange={this.props.handleSelectFieldChange}
+            handleMultiSelectFieldChange={this.props.handleMultiSelectFieldChange}
             handleRadioFieldChange={this.props.handleRadioFieldChange}
           />
         );
