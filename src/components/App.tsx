@@ -490,6 +490,7 @@ export default class App extends React.Component<any, AppState> {
         <CopyReactHook
           author="Andriy Diduh"
           webLink="https://andriydiduh.com"
+          gitLink="https://github.com/AndriyDiduh/frontier-react-exercise.git"
         />
       </>
     );

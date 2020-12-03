@@ -549,6 +549,41 @@ body {
     text-decoration: none;
     color: #1e54fc;
   }
+
+  .copyWebLink {
+    padding: 4px;
+
+    &:hover {
+      padding: 4px;
+      color: #fff;
+      background: #1e54fc;
+      border-radius: 4px;
+      -webkit-border-radius: 4px;
+      -moz-border-radius: 4px;
+    }
+  }
+
+  .copyGitLink {
+    padding-right: 9px;
+    margin-right: 9px;
+    border-right: 1px solid #1e54fc80;
+
+    svg {
+      fill: #1e54fc;
+      width: 16px;
+      height: 16px;
+      padding: 3px;
+      margin-bottom: -6px;
+      border-radius: 4px;
+      -webkit-border-radius: 4px;
+      -moz-border-radius: 4px;
+    }
+
+    &:hover svg {
+      fill: #ffffff;
+      background: #1e54fc;
+    }
+  }
 }
 
 // Adapt to the screen size
@@ -565,6 +600,18 @@ body {
 
     a {
       font-size: 13px;
+    }
+
+    .copyGitLink {
+      padding-right: 6px;
+      margin-right: 6px;
+      border-right: 1px solid #1e54fc80;
+      
+      svg {
+        padding: 2px;
+        width: 15px;
+        height: 15px;
+      }
     }
   }
 }
