@@ -28,7 +28,7 @@ const CopyFooter: FunctionComponent<{
   const [authorOk, clickOk] = useState(author);
 
   return (
-    <div className="copyAndriyDiduh" onClick={() => clickOk(author + ", Ok")}>
+    <div className="copyAndriyDiduh" onClick={() => clickOk(author + ", OK")}>
       <a href={gitLink} className="copyGitLink" target="_blank" rel="noreferrer">{gitHubSVG}</a>
       <a href={webLink} className="copyWebLink" target="_blank" rel="noreferrer">by {authorOk}</a>
     </div>

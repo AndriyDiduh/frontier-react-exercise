@@ -248,6 +248,9 @@ body {
         border-radius: 5px;
         -webkit-border-radius: 5px;
         -moz-border-radius: 5px;
+        box-shadow: 0px 0px 0px transparent;
+        -webkit-box-shadow: 0px 0px 0px transparent;
+        -moz-box-shadow: 0px 0px 0px transparent;
 
         &.error {
           background-color: #ffe1e1;
@@ -273,16 +276,15 @@ body {
           min-width: 100%;
           min-height: 118px;
           max-height: 350px;
-          font-family: "Arial", ui-sans-serif, sans-serif;
-
-          &:focus {
-            outline: none;
-            border-color: #1e54fc;
-          }
 
           &.error {
             background-color: #ffe1e1;
             border-color: red;
+          }
+
+          &:focus {
+            outline: none;
+            border-color: #1e54fc;
           }
 
           // Disable red field when checking by a pattern
@@ -606,7 +608,7 @@ body {
       padding-right: 6px;
       margin-right: 6px;
       border-right: 1px solid #1e54fc80;
-      
+
       svg {
         padding: 2px;
         width: 15px;
